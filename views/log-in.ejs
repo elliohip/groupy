@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <%- include('./partials/common-head.ejs') %>
+  <body>
+    <header class="log-in">
+      <h1> campus-connection </h1>
+      <a href="/log-in"> log in </a>
+      <a href="/sign-up"> sign up </a>
+    </header>
+    <main class="log-in">
+        <form method="POST" action="/register/log-in">
+            <label> username
+                <input type="text" name="username">
+            </label>
+            <label> password: 
+                <input type="text" name="password">
+            </label>
+            <input type="submit" value="log in" id="login-button">
+        </form>
+    </main>
+    <footer class="log-in"></footer>
+  </body>
+</html>
