@@ -5,12 +5,14 @@ const passport = require('../global_objects/configured_passport');
 
 router.post('/sign-up', 
 registerController.sign_up,
-passport.authenticate('local', {successRedirect: '/dashboard',
-failureRedirect: '/sign-up'}));
+
+);
 
 router.post('/log-in',
-passport.authenticate('local', {successRedirect: '/dashboard',
-failureRedirect: '/sign-up'}), (req, res, next) => {
+passport.authenticate('local', {
+    successRedirect: '/dashboard',
+    failureRedirect: '/sign-up'
+}), (req, res, next) => {
     console.log(req.user);
 });
 

@@ -3,7 +3,6 @@ const session_conf = require('./session_config');
 const http = require('http');
 const socket = require('socket.io');
 
-
 /**
  * @type {Server}
  */
@@ -34,7 +33,7 @@ module.exports.init_io = (http_server) => {
     
      
     io = new Server(http_server, server_ops);
-    io.engine.use(session_conf);
+    // io.engine.use(session_conf);
 
     io.engine.on("connection_error", (err) => {
         console.log(err.req);      // the request object
@@ -60,12 +59,12 @@ module.exports.init_io = (http_server) => {
         console.log("socket: " + socket.id + ' connected');
         console.log("socket url: " + socket.client.request.url);
 
-        socket.on('join-room', async (room_id, peer_id, domain) => {
+        socket.on('join-demo-room', async (room_id) => {
             try {
                 await socket.join(room_id);
+                socket.broadcast.to(room_id).emit('user-joined');
                 // socket.to(room_id)
-                socket.to(room_id).emit('connect-user', peer_id);
-                console.log(`peer ${peer_id} joined room ${room_id}`);
+                console.log(`room ${room_id}`);
             }
             catch (err) {
                 console.log(err);
@@ -73,10 +72,26 @@ module.exports.init_io = (http_server) => {
 
         });
 
+        socket.on('send-message', (room_id, message) => {
+            socket.broadcast.to(room_id).emit('message-recieved', message);
+        });
 
         socket.on('disconnect', () => {
             let time_stamp = Date.now();
             console.log(`user ${socket.id} disconnected at ${time_stamp}`);
+        });
+
+        socket.on('join-random-room', async (room_id, client_user) => {
+            try {
+                await socket.join(room_id);
+                socket.broadcast.to(room_id).emit('client-joined', client_user);
+                
+                console.log(`room ${room_id} : client ${client_id}`);
+            }
+            catch (err) {
+                console.log(err);
+            }
+
         });
     
     });

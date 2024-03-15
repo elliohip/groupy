@@ -24,10 +24,13 @@ module.exports = (pass) => {
         if (!check_pass) {
             return done(null, false)
         }
+        let log_user = {
+            user_id: user.id,
+            username: user.username,
+            email: user.email
+        }
 
-        
-
-        return done(null, user);
+        return done(null, log_user);
         } catch (err) {
         console.log(err);
         
@@ -42,10 +45,7 @@ module.exports = (pass) => {
                 return done(null, { 
                 user_id: user.user_id, 
                 username: user.username,
-                email: user.email,
-                domain: user.domain,
-                call_status: user.call_status,
-                room_id: user.room_id
+                email: user.email
             });
         })
     });

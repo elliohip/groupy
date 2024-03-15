@@ -24,16 +24,33 @@ module.exports.sign_up = async_handler(async (req, res, next) => {
         email: String(req.body.email)
     });
 
-    req.login(user,(err) => {
+    let log_user = {
+        user_id: user.id,
+        email: user.email,
+        username: user.username
+    }
+    req.login(log_user,(err) => {
         if (err) {
             throw err;
         }
     });
 
-    res.json({
-        user
-    });
-
-    return res.redirect('/dashboard');
+    return res.redirect('/dashboard/' + user._id);
 
 })
+
+module.exports.authenticate_user_strict  = async_handler((req, res, next) => {
+    if (req.user.user_id != String(req.params.user_id)) {
+        console.log({message: 'not user'});
+        return next(new Error('not user'))
+    }
+    next();
+});
+
+module.exports.authenticate_user = async_handler(async (req, res, next) => {
+    if (!req.user) {
+        res.json({message: 'error, no user'});
+        next(new Error('no user'))
+    }
+    next();
+});

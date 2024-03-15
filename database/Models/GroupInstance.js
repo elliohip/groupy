@@ -17,3 +17,4 @@ var schema = new mongoose.Schema({
 
 const GroupInstance = mongoose.model('GroupInstance', schema);
 
+module.exports = GroupInstance;

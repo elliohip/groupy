@@ -1,6 +1,10 @@
 const ses = require('express-session');
 const MongoStore = require('connect-mongo');
+
 require('dotenv').config();
+
+console.log(process.env.MONGO_URL);
+
 module.exports = ses({
     secret: process.env.SESSION_SECRET,
     resave: false,
