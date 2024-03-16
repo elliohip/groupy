@@ -1,3 +1,20 @@
+.button {
+	background-color:rgb(51, 173, 87);
+	color: #000000;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+
+/*
+if prefers dark mode
+*/
+
+@media (prefers-color-scheme: dark) {
+
+}
+
+
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
@@ -52,19 +69,42 @@ body {
 
 a {
   color: #00B7FF;
+  text-decoration: none;
 }
 
 .button {
 	margin: 15px;
 }
 
+/*
+style index
+*/
+main.index {
+	display: grid;
+	grid-template-rows: fit-content 1fr 4fr;
+
+}
+
+main.index h1{
+	display: flex;
+	justify-content: center;
+}
+
+#index-info {
+	display: flex;
+	justify-content: center;
+}
+#index-info p {
+	max-width: 800px;
+}
+
+
+/*
+style chat
+*/
 #message-history {
 	display: flex;
 	flex-direction: column;
-}
-
-.message {
-	
 }
 
 .message.client {
@@ -86,4 +126,37 @@ a {
 	background-color: #ffffff;
 	border: 1px solid #000000;
 	padding: 6px 8px;
+}
+
+body.random-chat main{
+	padding: 5%;
+}
+
+body.demo main{
+	padding: 5%;
+}
+
+body.demo main{
+	display: flex;
+	flex-direction: column;
+}
+
+body.random-chat main{
+	display: flex;
+	flex-direction: column;
+
+}
+
+#message-bar {
+	justify-self: center;
+	width: 80%;
+	padding: 10%;
+	display: grid;
+	grid-template-columns: 1fr auto;
+}
+
+#message-input {
+	max-height: 40px;
+	align-self: center;
+	border: 1px solid #000000;
 }

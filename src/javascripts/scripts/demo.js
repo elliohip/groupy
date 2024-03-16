@@ -29,6 +29,8 @@ export default async function() {
         text_content.classList.add('message', 'client');
         text_content.innerHTML = message_input.value;
         message_history.appendChild(text_content);
+
+        message_input.value = '';
     }
 
     socket.on('message-recieved', (message) => {
@@ -40,7 +42,7 @@ export default async function() {
         message_history.appendChild(text_content);
 
     });
-    
+
     socket.on('user-joined', (user) => {
         let u_info = document.createElement('p');
         u_info.id = 'user-join-flash';

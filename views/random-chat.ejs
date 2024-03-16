@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html>
   <%- include('partials/heads/random-chat-head.ejs') %>
-  <body class="dashboard">
+  <body class="random-chat">
     <header>
 
     </header>
     <main>
-        <button id="add-friend"> add friend </button>
+        <nav>
+            <button id="add-friend"> add friend </button>
+            <a href="/random-chat">
+                next call
+            </a>
+            <a href="/dashboard">
+                back to dashboard
+            </a>
+        </nav>
         <div id="message-history">
 
         </div>
