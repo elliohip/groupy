@@ -94,7 +94,7 @@ export default async function() {
     msg_bar.addEventListener('submit', (ev) => {
         socket.emit('typing-end', ROOM_ID);
     });
-
+    
     
     send_btn.addEventListener('click', send_listener);
 }

@@ -10,13 +10,24 @@ export default async function() {
     let message_history = document.getElementById('message-history');
     let send_btn = document.getElementById('send-message-btn');
 
+    let typing_box = document.getElementById('typing-info');
+    let alert_box = document.getElementById('message-alert-box');
+
     let add_friend_button = document.getElementById('add-friend');
+
+    /**
+     * 
+     * @type {HTMLFormElement}
+     */
+    let msg_bar = document.getElementById('message-bar')
 
     /**
      * 
      * @type {HTMLInputElement}
      */
     let message_input = document.getElementById('message-input');
+
+
     socket.emit('join-random-room', ROOM_ID, USERNAME);
 
     let send_listener = (ev) => {
@@ -55,16 +66,45 @@ export default async function() {
 
     });
 
-    socket.on('user-joined', (user) => {
+    socket.on('client-joined', (user) => {
         let u_info = document.createElement('p');
         u_info.id = 'user-join-flash';
         u_info.classList.add('user-join');
-        u_info.innerHTML = 'user ' + user.username + ' joined.'
-
+        u_info.innerHTML = 'user ' + user + ' joined.'
+        alert_box.appendChild(u_info);
         setTimeout(() => {
-            document.removeChild(u_info);
+            alert_box.removeChild(u_info);
         }, 3000);
+    });
+
+    socket.on('typing-start', () => {
+        let typing_info = document.createElement('p');
+        typing_info.innerHTML = '...'
+        typing_info.classList.add('message', 'other');
+        typing_info.id = 'other-typing';
+        typing_box.appendChild(typing_info);
+    });
+
+    socket.on('typing-end', () => {
+        let typing_info = document.getElementById('other-typing');
+        typing_box.removeChild(typing_info);
+    });
+
+    message_input.addEventListener('keydown', (ev) => {
+        if (ev.target.value == '') {
+            socket.emit('typing-start', ROOM_ID);
+        }
+        
+    });
+    message_input.addEventListener('keyup', (ev) => {
+        if (ev.target.value == '') {
+            socket.emit('typing-end', ROOM_ID);
+        }
     })
+    msg_bar.addEventListener('submit', (ev) => {
+        socket.emit('typing-end', ROOM_ID);
+    });
+    
 
     send_btn.addEventListener('click', send_listener);
 }

@@ -85,7 +85,7 @@ module.exports.init_io = (http_server) => {
                 await socket.join(room_id);
                 socket.broadcast.to(room_id).emit('client-joined', client_user);
                 
-                console.log(`room ${room_id} : client ${client_id}`);
+                console.log(`room ${room_id} : client ${client_user}`);
             }
             catch (err) {
                 console.log(err);
