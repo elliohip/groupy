@@ -93,6 +93,14 @@ module.exports.init_io = (http_server) => {
             }
 
         });
+
+        socket.on('typing-start', (room_id) => {
+            socket.broadcast.to(room_id).emit('typing-start');
+        });
+
+        socket.on('typing-end', (room_id) => {
+            socket.broadcast.to(room_id).emit('typing-end');
+        })
     
     });
 
