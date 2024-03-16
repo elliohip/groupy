@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html>
   <%- include('partials/heads/common-head.ejs') %>
-  <body>
+  <body class="sign-up">
     <header class="sign-up">
       <h1> campus-connection </h1>
-      <a href="/log-in"> log in </a>
-      <a href="/sign-up"> sign up </a>
+      <div class="button-box">
+        <a href="/log-in" class="button"> log in </a>
+        <a href="/sign-up" class="button"> sign up </a>
+      </div>
     </header>
     <main class="sign-up">
-      <form method="POST" action="/register/sign-up">
+      <form method="POST" action="/register/sign-up" id="sign-up">
         <label> username:
             <input type="text" name="username">
         </label>
@@ -18,7 +20,7 @@
         <label> email:
             <input type="email" name="email">
         </label>
-        <input type="submit" value="sign-up">
+        <input type="submit" value="sign-up" id="sign-up-btn">
       </form>
     </main>
     <footer class="sign-up"></footer>

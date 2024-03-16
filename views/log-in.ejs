@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html>
   <%- include('partials/heads/common-head.ejs') %>
-  <body>
+  <body class="log-in">
     <header class="log-in">
       <h1> campus-connection </h1>
-      <a href="/log-in"> log in </a>
-      <a href="/sign-up"> sign up </a>
+      <nav class="button-box">
+        <a href="/log-in" class="button"> log in </a>
+        <a href="/sign-up" class="button"> sign up </a>
+      </nav>
     </header>
     <main class="log-in">
-        <form method="POST" action="/register/log-in">
+        <form method="POST" action="/register/log-in" id="log-in">
             <label> username
                 <input type="text" name="username">
             </label>

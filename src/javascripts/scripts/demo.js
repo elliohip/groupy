@@ -11,6 +11,7 @@ export default async function() {
     let send_btn = document.getElementById('send-message-btn');
     let typing_box = document.getElementById('typing-info');
 
+    let alert_box = document.getElementById('message-alert-box');
     /**
      * 
      * @type {HTMLFormElement}
@@ -53,12 +54,16 @@ export default async function() {
 
     socket.on('user-joined', (user) => {
         let u_info = document.createElement('p');
-        u_info.id = 'user-join-flash';
-        u_info.classList.add('user-join');
-        u_info.innerHTML = 'user ' + user.username + ' joined.'
+        u_info.classList.add('user-join-flash');
+        u_info.innerHTML = 'user  joined.';
+
+        alert_box.appendChild(u_info);
 
         setTimeout(() => {
-            document.removeChild(u_info);
+            let elms = document.querySelectorAll('.user-join-flash');
+            elms.forEach((remove_elm) => {
+                alert_box.removeChild(remove_elm);
+            });
         }, 3000);
     });
 
@@ -75,18 +80,20 @@ export default async function() {
         typing_box.removeChild(typing_info);
     });
 
-    message_input.addEventListener('input', (ev) => {
+    message_input.addEventListener('keydown', (ev) => {
+        if (ev.target.value == '') {
+            socket.emit('typing-start', ROOM_ID);
+        }
+        
+    });
+    message_input.addEventListener('keyup', (ev) => {
         if (ev.target.value == '') {
             socket.emit('typing-end', ROOM_ID);
         }
-        else {
-            socket.emit('typing-start', ROOM_ID);
-        }
+    })
+    msg_bar.addEventListener('submit', (ev) => {
+        socket.emit('typing-end', ROOM_ID);
     });
-    msg_bar.onsubmit = (ev) => {
-        socket.emit('typing-end');
-    }
-
 
     
     send_btn.addEventListener('click', send_listener);

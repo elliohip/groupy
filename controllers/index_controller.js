@@ -1,11 +1,12 @@
 const async_handler = require('express-async-handler')
 
 module.exports.render_dashboard = async_handler(async (req, res, next) => {
+
     res.render('dashboard');
 });
 
 module.exports.render_user_dashboard = async_handler(async (req, res, next) => {
-
+    res.render('dashboard');
 });
 
 module.exports.render_demo = async_handler(async (req, res, next) => {

@@ -31,11 +31,11 @@ module.exports.sign_up = async_handler(async (req, res, next) => {
     }
     req.login(log_user,(err) => {
         if (err) {
+            console.log(err);
             throw err;
         }
+        res.redirect(`/dashboard`);
     });
-
-    return res.redirect('/dashboard/' + user._id);
 
 })
 

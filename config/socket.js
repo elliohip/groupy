@@ -80,7 +80,6 @@ module.exports.init_io = (http_server) => {
             let time_stamp = Date.now();
             console.log(`user ${socket.id} disconnected at ${time_stamp}`);
         });
-
         socket.on('join-random-room', async (room_id, client_user) => {
             try {
                 await socket.join(room_id);
@@ -100,7 +99,7 @@ module.exports.init_io = (http_server) => {
 
         socket.on('typing-end', (room_id) => {
             socket.broadcast.to(room_id).emit('typing-end');
-        })
+        });
     
     });
 
