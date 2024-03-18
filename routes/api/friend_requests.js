@@ -5,8 +5,10 @@ var register_controller = require('../../controllers/register_controller');
 
 /* GET friend_requests listing. */
 router.get('/:to_id', register_controller.authenticate_user, friend_request_controller.get_friend_requests_to);
-router.get('/:from_id', register_controller.authenticate_user, friend_request_controller.get_friend_requests_from);
 
+/*
+router.get('/:from_id', register_controller.authenticate_user, friend_request_controller.get_friend_requests_from);
+*/
 
 router.post('/', register_controller.authenticate_user,friend_request_controller.create_friend_request);
 

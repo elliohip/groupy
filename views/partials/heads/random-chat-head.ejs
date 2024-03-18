@@ -3,7 +3,11 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script>
         const ROOM_ID = '<%= room_id %>'
-        const USERNAME = '<%= username %>'
+        var USER = {
+            user_id: '<%= user.user_id %>',
+            username: '<%= user.username %>',
+            email: '<%= user.email %>'
+        }
     </script>
     <script src="/dist/main.bundle.js" type="module"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

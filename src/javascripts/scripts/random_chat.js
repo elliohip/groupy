@@ -1,11 +1,20 @@
 import {io} from 'socket.io-client';
 
 
+/**
+ * @type {{
+ *  user_id: String
+ *  username: String
+ *  socket_id: String
+ * }}
+ */
+let other_user = {
 
+}
 
 export default async function() {
     let socket = await io({
-        host: window.location.hostname
+        host: window.location.origin
     });
     let message_history = document.getElementById('message-history');
     let send_btn = document.getElementById('send-message-btn');
@@ -27,13 +36,16 @@ export default async function() {
      */
     let message_input = document.getElementById('message-input');
 
+    socket.on('connect', () => {
+        socket.emit('join-random-room', ROOM_ID, socket.id, USER);
+    });
 
-    socket.emit('join-random-room', ROOM_ID, USERNAME);
+    console.log(USER);
 
     let send_listener = (ev) => {
         ev.preventDefault();
         socket.emit('send-message', ROOM_ID, {
-            username: USERNAME,
+            username: USER.username,
             content: message_input.value
         });
 
@@ -44,9 +56,18 @@ export default async function() {
         message_history.appendChild(text_content);
     }
 
-    let add_friend_listener = (ev) => {
+    let add_friend = async (ev) => {
         ev.preventDefault();
-        socket.emit('add-friend', ROOM_ID, USERNAME);
+        let request = await (await fetch(`${window.location.origin}/api/friend-requests`, {
+            method: 'POST',
+            body: {
+                to_id: other_user.user_id
+            }
+        })).json()
+        socket.emit('add-friend', socket.id, USER, other_user.socket_id, request.id);
+
+        add_friend_button.parentElement.removeChild(add_friend_button);
+
     }
 
     socket.on('message-recieved', async (message) => {
@@ -66,12 +87,17 @@ export default async function() {
 
     });
 
-    socket.on('client-joined', (user) => {
+    socket.on('client-joined', (client_id, user) => {
+
         let u_info = document.createElement('p');
         u_info.id = 'user-join-flash';
         u_info.classList.add('user-join');
-        u_info.innerHTML = 'user ' + user + ' joined.'
+        u_info.innerHTML = 'user ' + user.username + ' joined.'
         alert_box.appendChild(u_info);
+        other_user.username = user.username;
+        other_user.user_id = user.user_id;
+        other_user.socket_id = client_id
+
         setTimeout(() => {
             alert_box.removeChild(u_info);
         }, 3000);
@@ -90,6 +116,49 @@ export default async function() {
         typing_box.removeChild(typing_info);
     });
 
+    socket.on('friend-request', (socket_id, username, to_socket_id, friend_req_id) => {
+        let friend_alert = document.createElement('div');
+        friend_alert.classList.add('friend-request-alert');
+
+        let friend_info = document.createElement('p');
+        friend_info.innerHTML = `${username} added you as a friend`;
+
+        let friend_request_actions = document.createElement('div');
+
+        let accept_btn = document.createElement('button');
+        let reject_btn = document.createElement('button');
+        accept_btn.classList.add('accept', 'button');
+        reject_btn.classList.add('reject', 'button');
+
+        let accept_listener = async (ev) => {
+            await (await fetch(`${window.location.origin}/api/friend-requests/${friend_req_id}/accept`)).json();
+            accept_btn.classList.add('clicked');
+            friend_request_actions.innerHTML = 'accepted'
+            
+        };
+        let reject_listener = async (ev) => {
+            await (await fetch(`${window.location.origin}/api/friend-requests/${friend_req_id}/reject`)).json();
+            friend_request_actions.innerHTML = 'rejected'
+        };
+
+        accept_btn.addEventListener('click', accept_listener);
+        reject_btn.addEventListener('click', reject_listener);
+
+
+        friend_request_actions.append(accept_btn, reject_btn);
+
+        friend_alert.append(friend_info, friend_request_actions);
+
+        alert_box.appendChild(friend_alert);
+
+        setTimeout(() => {
+            alert_box.removeChild(friend_alert);
+        }, 3000);
+    })
+
+
+
+
     message_input.addEventListener('keydown', (ev) => {
         if (ev.target.value == '') {
             socket.emit('typing-start', ROOM_ID);
@@ -104,7 +173,10 @@ export default async function() {
     msg_bar.addEventListener('submit', (ev) => {
         socket.emit('typing-end', ROOM_ID);
     });
+
+
     
 
     send_btn.addEventListener('click', send_listener);
+    add_friend_button.addEventListener('click', add_friend);
 }

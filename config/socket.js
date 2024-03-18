@@ -80,12 +80,10 @@ module.exports.init_io = (http_server) => {
             let time_stamp = Date.now();
             console.log(`user ${socket.id} disconnected at ${time_stamp}`);
         });
-        socket.on('join-random-room', async (room_id, client_user) => {
+        socket.on('join-random-room', async (room_id, socket_id, user) => {
             try {
                 await socket.join(room_id);
-                socket.broadcast.to(room_id).emit('client-joined', client_user);
-                
-                console.log(`room ${room_id} : client ${client_user}`);
+                socket.broadcast.to(room_id).emit('client-joined', socket_id, user);
             }
             catch (err) {
                 console.log(err);
@@ -100,7 +98,10 @@ module.exports.init_io = (http_server) => {
         socket.on('typing-end', (room_id) => {
             socket.broadcast.to(room_id).emit('typing-end');
         });
-    
+
+        socket.on('add-friend', (socket_id, username, to_socket_id) => {
+            socket.broadcast.to(to_socket_id).emit('friend-request', socket_id, username, to_socket_id);
+        })
     });
 
     

@@ -5,12 +5,14 @@ const FriendInstance = require('../database/Models/FriendInstance')
 const async_handler = require('express-async-handler')
 
 module.exports.create_friend_request = async_handler(async (req, res, next) => {
+    console.log(req.body);
+    
     let check_exists = await FriendRequest.findOne({
-        from_id: req.body.from_id,
+        from_id: req.user.user_id,
         to_id: req.body.to_id
     });
     let check_is_friend = await FriendInstance.findOne({
-        user_id: req.body.from_id,
+        user_id: req.user.user_id,
         friend_with: req.body.to_id
     })
     if (check_exists) {
@@ -19,12 +21,13 @@ module.exports.create_friend_request = async_handler(async (req, res, next) => {
         return res.json({message: 'already friends'});
     }
 
-    await FriendRequest.create({
-        from_id: req.body.from_id,
+    let friend_req = await FriendRequest.create({
+        from_id: req.user.user_id,
         to_id: req.body.to_id,
-        accepted: false
+        accepted: false,
+        rejected: false
     });
-    res.status(200);
+    res.json(friend_req);
 });
 
 /**
@@ -38,42 +41,51 @@ module.exports.accept_friend_request = async_handler(async (req, res, next)=> {
         accepted: true
     });
 
-    let group = await fetch(`${process.env.BASE_PATH}/api/groups/`, {
+    let group = await (await fetch(`${process.env.BASE_PATH}/api/groups/`, {
         method: 'POST'
-    });
+    })).json();
 
     // group instances
-    let from_group_instance = await fetch(`${process.env.BASE_PATH}/api/group-instances/`, {
+    let from_group_instance = await (await fetch(`${process.env.BASE_PATH}/api/group-instances/`, {
         method: 'POST',
         body: {
             group_id: group.id,
             user_id: friend_request.from_id
         }
-    });
-    let to_group_instance = await fetch(`${process.env.BASE_PATH}/api/group-instances/`, {
+    })).json();
+    let to_group_instance = await (await fetch(`${process.env.BASE_PATH}/api/group-instances/`, {
         method: 'POST',
         body: {
             group_id: group.id,
             user_id: friend_request.to_id
         }
-    });
+    })).json();
 
     // friend instances
-    let to_friend_instance = await fetch(`${process.env.BASE_PATH}/api/friend-instances/`, {
+    let to_friend_instance = await (await fetch(`${process.env.BASE_PATH}/api/friend-instances/`, {
         method: 'POST',
         body: {
             user_id: friend_request.to_id,
             friends_with: friend_request.from_id
         }
-    });
-    let from_friend_instance = await fetch(`${process.env.BASE_PATH}/api/friend-instances`, {
+    })).json();
+    let from_friend_instance = await (await fetch(`${process.env.BASE_PATH}/api/friend-instances`, {
         method: 'POST',
         body: {
             user_id: friend_request.from_id,
             friends_with: friend_request.to_id
         }
-    });
+    })).json();
+
 });
+
+module.exports.reject_friend_request = async_handler(async (req, res, next) => {
+    let friend_request = await FriendRequest.findByIdAndUpdate(req.params.friend_request_id, {
+        rejected: true
+    });
+    next();
+});
+
 module.exports.get_friend_request = async_handler(async (req, res, next) => {
 
 })
@@ -88,7 +100,8 @@ module.exports.delete_friend_request = async_handler(async (req, res, next) => {
 
 module.exports.get_friend_requests_to = async_handler(async (req, res, next) => {
     let friend_requests = await FriendRequest.find({
-        to_id: req.params.to_id
+        to_id: req.params.to_id,
+        rejected: false
     });
 
     res.json(friend_requests);
