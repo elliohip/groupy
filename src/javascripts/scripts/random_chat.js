@@ -1,21 +1,20 @@
 import {io} from 'socket.io-client';
 
-
-/**
- * @type {{
- *  user_id: String
- *  username: String
- *  socket_id: String
- * }}
- */
-let other_user = {
-
-}
-
 export default async function() {
     let socket = await io({
         host: window.location.origin
     });
+
+    /**
+    * @type {{
+    *  user_id: String
+    *  username: String
+    *  socket_id: String
+    * }}
+    */
+    var other_user = {
+   
+    }
     let message_history = document.getElementById('message-history');
     let send_btn = document.getElementById('send-message-btn');
 
@@ -127,11 +126,18 @@ export default async function() {
 
         let accept_btn = document.createElement('button');
         let reject_btn = document.createElement('button');
+
         accept_btn.classList.add('accept', 'button');
         reject_btn.classList.add('reject', 'button');
 
+        accept_btn.innerHTML = 'accept';
+        reject_btn.innerHTML = 'reject';
+
         let accept_listener = async (ev) => {
-            await (await fetch(`${window.location.origin}/api/friend-requests/${friend_req_id}/accept`)).json();
+            await (await fetch(`${window.location.origin}/api/friend-requests/${friend_req_id}/accept`, 
+            {
+                method: 'POST'
+            })).json();
             accept_btn.classList.add('clicked');
             friend_request_actions.innerHTML = 'accepted'
             

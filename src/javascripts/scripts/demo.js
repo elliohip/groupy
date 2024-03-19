@@ -5,7 +5,7 @@ import {io} from 'socket.io-client';
 
 export default async function() {
     let socket = await io({
-        host: window.location.hostname
+        host: window.location.origin
     });
     let message_history = document.getElementById('message-history');
     let send_btn = document.getElementById('send-message-btn');

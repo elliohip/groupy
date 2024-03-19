@@ -12,7 +12,23 @@ const schema = new mongoose.Schema({
     },
     email: {
         type: String
-    }
+    },
+    friends: [{
+        type: Schema.Types.ObjectId, 
+        ref: 'User'
+    }], 
+    blocked: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    groups: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Group'
+    }],
+    messages: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Message'
+    }]
 
 });
 
