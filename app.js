@@ -6,9 +6,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var configured_passoprt = require('./global_objects/configured_passport');
 var session = require('express-session');
+// var bodyParser = require('body-parser')
 
 const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
+
+console.log(process.env.MONGO_URL);
 
 var connection = mongoose.connect(process.env.MONGO_URL);
 
@@ -41,6 +44,7 @@ app.use(session({
   })
 }));
 app.use(configured_passoprt.session());
+// app.use(bodyParser.urlencoded())
 
 app.use('/', indexRouter);
 app.use('/register', registerRouter);

@@ -16,5 +16,6 @@ router.delete('/:user_id', );
 
 router.get('/:messages', )
 
+router.get('/init-groups', )
 
 module.exports = router;

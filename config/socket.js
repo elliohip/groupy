@@ -98,7 +98,9 @@ module.exports.init_io = (http_server) => {
         socket.on('typing-end', (room_id) => {
             socket.broadcast.to(room_id).emit('typing-end');
         });
-
+        socket.on('respond-to-join', (rm_id, sock_id, user) => {
+            socket.broadcast.to(rm_id).emit('respond-to-join', rm_id, sock_id, user);
+        });
         socket.on('add-friend', (socket_id, username, to_socket_id) => {
             socket.broadcast.to(to_socket_id).emit('friend-request', socket_id, username, to_socket_id);
         })

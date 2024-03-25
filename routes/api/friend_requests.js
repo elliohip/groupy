@@ -10,7 +10,7 @@ router.get('/:to_id', register_controller.authenticate_user, friend_request_cont
 router.get('/:from_id', register_controller.authenticate_user, friend_request_controller.get_friend_requests_from);
 */
 
-router.post('/', register_controller.authenticate_user,friend_request_controller.create_friend_request);
+router.post('/:to_id', register_controller.authenticate_user,friend_request_controller.create_friend_request);
 
 router.get('/:friend_request_id', register_controller.authenticate_user, friend_request_controller.get_friend_request);
 

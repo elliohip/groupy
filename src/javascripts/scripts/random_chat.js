@@ -55,20 +55,6 @@ export default async function() {
         message_history.appendChild(text_content);
     }
 
-    let add_friend = async (ev) => {
-        ev.preventDefault();
-        let request = await (await fetch(`${window.location.origin}/api/friend-requests`, {
-            method: 'POST',
-            body: {
-                to_id: other_user.user_id
-            }
-        })).json()
-        socket.emit('add-friend', socket.id, USER, other_user.socket_id, request.id);
-
-        add_friend_button.parentElement.removeChild(add_friend_button);
-
-    }
-
     socket.on('message-recieved', async (message) => {
 
         let message_box = document.createElement('div');
@@ -93,13 +79,24 @@ export default async function() {
         u_info.classList.add('user-join');
         u_info.innerHTML = 'user ' + user.username + ' joined.'
         alert_box.appendChild(u_info);
+
+        console.log(user.username);
         other_user.username = user.username;
         other_user.user_id = user.user_id;
-        other_user.socket_id = client_id
+        other_user.socket_id = client_id;
+
+        socket.emit('respond-to-join', ROOM_ID, socket.id, USER);
 
         setTimeout(() => {
             alert_box.removeChild(u_info);
         }, 3000);
+    });
+
+    socket.on('respond-to-join', (rm_id, sock_id, user) => {
+        other_user.socket_id = sock_id;
+        other_user.user_id = user.user_id;
+        other_user.username = user.username;
+        console.log(rm_id);
     });
 
     socket.on('typing-start', () => {
@@ -181,8 +178,22 @@ export default async function() {
     });
 
 
-    
+    let add_friend = async (ev) => {
+        ev.preventDefault();
+        let s_id = other_user.user_id || '';
+        console.log(other_user.user_id);
+        let request = await (await fetch(`${window.location.origin}/api/friend-requests/${other_user.user_id}`, {
+            method: 'POST',
+            body: {
+                to_id: other_user.user_id
+            }
+        })).json()
+        socket.emit('add-friend', socket.id, USER, other_user.socket_id);
 
-    send_btn.addEventListener('click', send_listener);
+        add_friend_button.parentElement.removeChild(add_friend_button);
+
+    }
+
     add_friend_button.addEventListener('click', add_friend);
+    send_btn.addEventListener('click', send_listener);
 }

@@ -8,9 +8,9 @@ module.exports.create_friend_request = async_handler(async (req, res, next) => {
 
     let check_exists = await FriendRequest.findOne({
         from_id: req.user.user_id,
-        to_id: req.body.to_id
+        to_id: req.params.to_id
     });
-    let check_is_friend = (await User.findById(req.user.user_id)).friends.includes(req.body.to_id);
+    let check_is_friend = (await User.findById(req.user.user_id)).friends.includes(req.params.to_id);
 
     if (check_exists) {
         return res.json({message: 'already sent request'});
@@ -20,7 +20,7 @@ module.exports.create_friend_request = async_handler(async (req, res, next) => {
 
     let friend_req = await FriendRequest.create({
         from_id: req.user.user_id,
-        to_id: req.body.to_id,
+        to_id: req.params.to_id,
         accepted: false,
         rejected: false
     });
