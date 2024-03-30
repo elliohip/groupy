@@ -7,8 +7,8 @@
  * 
  * 'open' or 'closed'
  * @type {{
- *  room_id: String,
- *  room_status: String
- * }[]}
- */
+*  room_id: String,
+*  room_status: String
+* }[]}
+*/
 module.exports = [];

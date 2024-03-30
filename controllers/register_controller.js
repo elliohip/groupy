@@ -55,3 +55,12 @@ module.exports.authenticate_user = async_handler(async (req, res, next) => {
     console.log(req.body);
     next();
 });
+
+module.exports.authenticate_native = async_handler(async (req, res, next) => {
+    if (!req.body.token) {
+        res.json({error: {
+            message: 'not authenticated'
+        }});
+    }
+});
+
