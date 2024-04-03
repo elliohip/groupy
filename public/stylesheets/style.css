@@ -239,3 +239,50 @@ body.random-chat main{
 	display: flex;
 	justify-content: center;
 }
+
+/*
+    DISPLAY DASHBOARD
+*/
+.profile-pic{
+	max-width: 80px;
+	max-height: 80px;
+
+}
+
+#profile-btn {
+	padding: 10px;
+}
+
+/*
+	DISPLAY USER PROFILE INFO
+*/
+body.user-profile {
+	display: grid;
+	grid-template-columns: auto 1fr;
+}
+nav.user-profile {
+	max-width: 250px;
+}
+main.user-profile.friend-requests {
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+}
+
+main.user-profile.photos {
+	display: flex;
+	justify-content: center;
+}
+
+main.user-profile.photos #photo-box{
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 10px;
+}
+
+
+main.user-profile.friends {
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+}

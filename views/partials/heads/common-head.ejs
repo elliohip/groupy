@@ -2,5 +2,27 @@
     <title>rando-chat</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module">
+        let login_form = document.getElementById('log-in');
+        let signup_form = document.getElementById('sign-up');
+        login_form.lastChild.addEventListener('click', (ev) => {
+            ev.preventDefault();
 
+            (fetch(`${window.location.origin}/register/log-in`, {
+                method: 'POST',
+                body: new FormData(login_form)
+            }));
+        });
+
+        document.getElementById('sign-up-button').addEventListener('click', async (ev) => {
+            ev.preventDefault();
+
+            await (await fetch(`${window.location.origin}/register/sign-up`, {
+                method: 'POST',
+                body: new FormData(signup_form)
+            })).json();
+
+            window.location = `${window.location.origin}/dashboard`;
+        });
+    </script>
 </head>

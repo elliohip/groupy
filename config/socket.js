@@ -2,6 +2,8 @@ const { Server } = require('socket.io');
 const session_conf = require('./session_config');
 const http = require('http');
 const socket = require('socket.io');
+var group_map = require('../global_objects/group_map');
+const { v4 } = require('uuid');
 
 /**
  * @type {Server}
@@ -33,7 +35,7 @@ module.exports.init_io = (http_server) => {
     
      
     io = new Server(http_server, server_ops);
-    // io.engine.use(session_conf);
+    io.engine.use(session_conf);
 
     io.engine.on("connection_error", (err) => {
         console.log(err.req);      // the request object
@@ -103,7 +105,17 @@ module.exports.init_io = (http_server) => {
         });
         socket.on('add-friend', (socket_id, username, to_socket_id) => {
             socket.broadcast.to(to_socket_id).emit('friend-request', socket_id, username, to_socket_id);
-        })
+        });
+
+
+        socket.on('join-group', (group_id_solid, username, user_id, socket_id) => {
+            let g_id = group_map.get(group_id_solid);
+            if (!g_id) {
+                g_id = v4();
+                group_map.set(group_id_solid, g_id);
+
+            }
+        });
     });
 
     

@@ -4,7 +4,7 @@ var messages_controller = require('../../controllers/message_controller');
 var register_controller = require('../../controllers/register_controller');
 
 /* GET users listing. */
-router.get('/', );
+router.get('/', register_controller.authenticate_user,messages_controller.get_messages);
 
 
 router.get('/:message_id', );

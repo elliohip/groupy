@@ -5,16 +5,25 @@ const passport = require('../global_objects/configured_passport');
 
 router.post('/sign-up', 
 registerController.sign_up, (req, res, next) => {
-    res.status(200);
+    res.redirect('/dashboard');
     next();
 }
 );
 
-router.post('/log-in',
+router.post('/body-check', (req, res, next) => {
+    console.log(req.body);
+})
+
+router.post('/log-in',(req, res, next) => {
+    console.log(req.body);
+    next();
+}, registerController.log_in);
+
+/*
 passport.authenticate('local', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/sign-up'
-}));
+    successRedirect: '/dashboard'
+})
+*/
 
 router.post('/logout', (req,res, next) => {
     try {

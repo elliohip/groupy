@@ -4,12 +4,14 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var configured_passoprt = require('./global_objects/configured_passport');
-var session = require('express-session');
-// var bodyParser = require('body-parser')
+// var configured_passoprt = require('./global_objects/configured_passport');
+var session = require('./config/session_config');
+var bodyParser = require('body-parser')
 
-const MongoStore = require('connect-mongo');
+// const MemoryStore = require('memorystore')(session)
 const mongoose = require('mongoose');
+
+// const MongoStore = require('connect-mongo');
 
 console.log(process.env.MONGO_URL);
 
@@ -25,25 +27,14 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(logger('dev'));
+app.use(logger('dev'));//
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: { 
-            secure: false,
-            maxAge: 1000 * 60 * 60 * 4,
-            httpOnly: true
-          },
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URL
-  })
-}));
-app.use(configured_passoprt.session());
+app.use(session);
+// app.use(configured_passoprt.initialize());
+// app.use(configured_passoprt.session());
 // app.use(bodyParser.urlencoded())
 
 app.use('/', indexRouter);

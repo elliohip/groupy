@@ -10,8 +10,10 @@ var {v4} = require('uuid');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.
-  render('index', { title: 'Express' });
+  console.log(req.session.user_id);
+  
+  res.render('index', { title: 'Express' });
+  
 });
 
 router.get('/sign-up', (req, res, next) => {
@@ -58,5 +60,6 @@ router.get('/random-chat', register_controller.authenticate_user, (req, res, nex
 
 router.get('/random-chat/:room_id', register_controller.authenticate_user, index_controller.render_random_chat);
 
+router.get('/user-profile', register_controller.authenticate_user, index_controller.render_user_profile);
 
 module.exports = router;

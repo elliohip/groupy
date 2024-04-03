@@ -28,8 +28,13 @@ const schema = new mongoose.Schema({
     messages: [{
         type: Schema.Types.ObjectId,
         ref: 'Message'
-    }]
-
+    }],
+    photo_ids: [{
+        type: String
+    }],
+    pfp_id: {
+        type: String
+    }
 });
 
 const User = mongoose.model('User', schema);

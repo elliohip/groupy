@@ -3,6 +3,12 @@ const MongoStore = require('connect-mongo');
 
 require('dotenv').config();
 
+/*
+store: new MongoStore({
+        mongoUrl: process.env.MONGO_URL
+    })
+*/
+
 console.log(process.env.MONGO_URL);
 
 module.exports = ses({
@@ -12,9 +18,9 @@ module.exports = ses({
     cookie: { 
               secure: false,
               maxAge: 1000 * 60 * 60 * 4,
-              httpOnly: true
+              httpOnly: true,
             },
-    store: new MongoStore({
+    store: MongoStore.create({
         mongoUrl: process.env.MONGO_URL
     })
 });

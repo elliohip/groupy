@@ -14,23 +14,23 @@ module.exports = (pass) => {
     pass.use('local',
     new LocalStrategy(async (username, password, done) => {
         try{
-        let user = await User.findOne({
-            username: username
-        });
-        if (!user) {
-            return done(null, false)
-        }
-        let check_pass = await bcrypt.compare(password, user.hashed_password);
-        if (!check_pass) {
-            return done(null, false)
-        }
-        let log_user = {
-            user_id: user.id,
-            username: user.username,
-            email: user.email
-        }
+            let user = await User.findOne({
+                username: username
+            });
+            if (!user) {
+                return done(null, false)
+            }
+            let check_pass = await bcrypt.compare(password, user.hashed_password);
+            if (!check_pass) {
+                return done(null, false)
+            }
+            let log_user = {
+                user_id: user.id,
+                username: user.username,
+                email: user.email
+            }
 
-        return done(null, log_user);
+            return done(null, log_user);
         } catch (err) {
         console.log(err);
         
@@ -52,7 +52,9 @@ module.exports = (pass) => {
 
     pass.deserializeUser(function(user, done) {
         process.nextTick(function() { 
-            return done(null, user); 
+            console.log(user);
+            return done(null, user);
+    
         });
     });
 

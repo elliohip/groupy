@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html>
-  <%- include('partials/heads/common-head.ejs') %>
+  <%- include('partials/heads/dashboard-head.ejs') %>
   <body class="dashboard">
     <header>
-
+      <a id="profile-btn" href="/user-profile">
+        <img src="/<%= `api/users/photos/pfp` %>" class="profile-pic">
+        <p>
+          profile pic
+        </p>
+      </a>
     </header>
     <nav>
       <ol id="chats-list">
@@ -11,7 +16,7 @@
       </ol>
       <a class="button" id="random-chat" href="/random-chat">random chat</a>
     </nav>
-    <div class="dashboard" id="current-room">
+    <div class="dashboard" id="main-display">
       
     </div>
     <footer>
