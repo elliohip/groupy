@@ -62,4 +62,6 @@ router.get('/random-chat/:room_id', register_controller.authenticate_user, index
 
 router.get('/user-profile', register_controller.authenticate_user, index_controller.render_user_profile);
 
+router.get('/user-info/:user_id', register_controller.authenticate_user, index_controller.render_user_info)
+
 module.exports = router;

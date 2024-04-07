@@ -4,13 +4,15 @@ var friend_request_controller = require('../../controllers/friend_request_contro
 var register_controller = require('../../controllers/register_controller');
 
 /* GET friend_requests listing. */
-router.get('/:to_id', register_controller.authenticate_user, friend_request_controller.get_friend_requests_to);
 
-/*
-router.get('/:from_id', register_controller.authenticate_user, friend_request_controller.get_friend_requests_from);
-*/
 
-router.post('/:to_id', register_controller.authenticate_user,friend_request_controller.create_friend_request);
+router.get('/:to_id/to', register_controller.authenticate_user, friend_request_controller.get_friend_requests_to);
+
+
+router.get('/:from_id/from', register_controller.authenticate_user, friend_request_controller.get_friend_requests_from);
+
+
+router.post('/', register_controller.authenticate_user,friend_request_controller.create_friend_request);
 
 router.get('/:friend_request_id', register_controller.authenticate_user, friend_request_controller.get_friend_request);
 
@@ -21,5 +23,6 @@ router.delete('/:friend_request_id', register_controller.authenticate_user, frie
 
 router.put('/:friend_request_id/accept', register_controller.authenticate_user, friend_request_controller.accept_friend_request);
 
+router.put('/:friend_request_id/reject', register_controller.authenticate_user, friend_request_controller.reject_friend_request);
 
 module.exports = router;

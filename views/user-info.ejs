@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <%- include('partials/heads/user-info-head.ejs') %>
+  <body class="user-p-info">
+    <header>
+        <a href="/dashboard" class="button">
+            back to dashboard
+        </a>
+    </header>
+    <sect id="u-info-pfp">
+        <img src="<%= `/api/users/photos/pfp/${user._id}` %>" class="user-info-profile-pic">
+        <h1><%= user.username %></h1>
+    </sect>
+    <main id="user-info-main">
+        <sect id="user-bio">
+            <h1>
+                bio: 
+            </h1>
+            <p id="bio">
+                <% if (user.profile_info.bio) { %>
+                    <%= user.profile_info.bio %>
+                <% } else { %>
+                    no bio
+                <% } %>
+            </p>
+        </sect>
+        <sect id="user-info-photo-box">
+            
+                    <% for (let i = 0; i < user.photo_ids.length; i++) { %>
+
+                    <img src="<%= `/api/users/photos/get-user-pic/${user.photo_ids[i]}?user_id=${user._id}` %>" class="user-info-photo">
+                <% } %>
+
+        </sect>
+    </main>
+  </body>
+</html>

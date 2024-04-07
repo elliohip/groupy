@@ -34,6 +34,11 @@ const schema = new mongoose.Schema({
     }],
     pfp_id: {
         type: String
+    },
+    profile_info: {
+        bio: {
+            type: String
+        }
     }
 });
 

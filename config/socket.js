@@ -80,8 +80,13 @@ module.exports.init_io = (http_server) => {
 
         socket.on('disconnect', () => {
             let time_stamp = Date.now();
+            
             console.log(`user ${socket.id} disconnected at ${time_stamp}`);
         });
+
+        socket.on('user-left', (room_id, user) => {
+            socket.broadcast.to(room_id).emit('user-left', user);
+        })
         socket.on('join-random-room', async (room_id, socket_id, user) => {
             try {
                 await socket.join(room_id);

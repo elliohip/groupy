@@ -53,7 +53,7 @@ export default async function() {
     });
 
     socket.on('user-joined', (user) => {
-        let u_info = document.createElement('p');
+        let u_info = document.createElement('h1');
         u_info.classList.add('user-join-flash');
         u_info.innerHTML = 'user  joined.';
 
@@ -64,7 +64,7 @@ export default async function() {
             elms.forEach((remove_elm) => {
                 alert_box.removeChild(remove_elm);
             });
-        }, 3000);
+        }, 5000);
     });
 
     socket.on('typing-start', () => {

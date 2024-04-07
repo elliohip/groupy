@@ -25,6 +25,7 @@ router.post('/', function(req, res, next) {
   
 });
 
+router.post('/new-group', register_controller.authenticate_user, group_controller.create_group_with_query);
 
 router.put('/:group_id', function(req, res, next) {
   

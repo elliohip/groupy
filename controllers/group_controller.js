@@ -50,11 +50,33 @@ module.exports.delete_group = async_handler(async (req, res, next) => {
 
 });
 
+/**
+ * using req.body.users, with users being a  ',' 
+ * seperated string that gets tokenized into the ids
+ */
 module.exports.create_group = async_handler(async (req, res, next) => {
+    let users_arr = String(req.body.users).split(',');
+    let nm = req.body.group_name | `${users_arr[0]}, ${users_arr[1]}`;
     let group = await Group.create({
-        group_name: req.body.group_name,
-        users: req.body.users
+        group_name: nm,
+        users: users_arr
     });
 
     res.json(group);
+});
+
+module.exports.create_group_with_query = async_handler(async(req, res, next) => {
+    let users_arr = [req.session.user_id, req.query.friend_id];
+    if (!req.query.group_name) {
+        Group.create({
+            group_name: `${users_arr[0]}, ${users_arr[1]}`,
+            users: users_arr
+        })
+        return next();
+    }
+    Group.create({
+        group_name: req.query.group_name,
+        users: users_arr
+    });
+    return next();
 });

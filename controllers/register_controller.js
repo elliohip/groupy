@@ -83,8 +83,10 @@ module.exports.authenticate_user = async_handler(async (req, res, next) => {
         res.json({message: 'error, no user'});
         next(new Error('no user'))
     }
-    console.log(req.body);
-    console.log(req.headers)
+    console.log('req_params: ' + JSON.stringify(req.params));
+    console.log('body: ' + JSON.stringify(req.body));
+    console.log('query_params: ' + JSON.stringify(req.query));
+    // console.log(req.headers);
     next();
 });
 

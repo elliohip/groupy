@@ -7,12 +7,35 @@ const multer  = require('multer');
 const path = require('path');
 const { v4 } = require('uuid');
 
+const fs = require('fs').promises;
+
 const user_pfp_storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        if (!req.user) {
+    destination: async (req, file, cb) => {
+        if (!req.session.user_id) {
             cb(new Error('no user'))
         }
-        cb(null, path.resolve(`../../uploads/user/${req.user.user_id}/photos/${v4()}`));
+        try {
+            let check_exists = await fs.access(path.resolve(`uploads/user/${req.session.user_id}`));
+
+            return cb(null, path.resolve(`uploads/user/${req.session.user_id}`));
+        } catch (err) {
+            if (err && err.code === 'ENOENT') {
+                await fs.mkdir(path.resolve(`uploads/user/${req.session.user_id}`));
+                return cb(null, path.resolve(`uploads/user/${req.session.user_id}`));
+            } else {
+                console.log(err);
+            }
+        }
+    },
+    filename: async (req, file, cb) => {
+        if (!req.session.user_id) {
+            cb(new Error('no user'))
+        }
+        else {
+            console.log(file);
+            let n = `${v4()}${path.extname(file.destination + '/' + file.originalname)}`;
+            cb(null, n)
+        }
     }
 });
 
@@ -25,9 +48,13 @@ router.get('/pfp', photo_controller.get_profile_pic);
 
 router.get('/user-photos', register_controller.authenticate_user, photo_controller.get_user_pic_ids);
 
-router.post('/',  express.json(),register_controller.authenticate_user, upload.single('photo_up'), photo_controller.add_picture);
+router.get('/get-user-pic/:photo_id', register_controller.authenticate_user, photo_controller.get_user_pic_by_id);
 
-router.get('/by-id/:photo_id', register_controller.authenticate_user, photo_controller.get_pic_by_id);
+router.get('/pfp/:user_id', register_controller.authenticate_user, photo_controller.get_pfp_by_id);
+
+router.post('/',register_controller.authenticate_user, upload.single('photo_up'), photo_controller.add_picture);
+
+router.get('/by-id', register_controller.authenticate_user, photo_controller.get_pic_by_id);
 
 // router.put('/:photo_id');
 

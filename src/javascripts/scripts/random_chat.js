@@ -35,6 +35,9 @@ export default async function() {
      */
     let message_input = document.getElementById('message-input');
 
+    let next_button = document.getElementById('next-call');
+    let dash_button = document.getElementById('return-to-dash');
+
     socket.on('connect', () => {
         socket.emit('join-random-room', ROOM_ID, socket.id, USER);
     });
@@ -43,16 +46,34 @@ export default async function() {
 
     let send_listener = (ev) => {
         ev.preventDefault();
+
+        if (message_input.value == '') {
+            return;
+        }
         socket.emit('send-message', ROOM_ID, {
             username: USER.username,
-            content: message_input.value
+            content: message_input.value,
+            user_id: USER.user_id
         });
 
+        let messg_bx = document.createElement('div');
         let text_content = document.createElement('p');
         // rememeber, one class for message, one class for if its this user or other user
-        text_content.classList.add('message', 'client');
+        let user_pfp = document.createElement('img');
+
+        user_pfp.classList.add('message-pfp');
+        user_pfp.src = `/api/users/photos/pfp/${USER.user_id}`
+
+        messg_bx.classList.add('message', 'client');
+        text_content.classList.add('message-text', 'client');
         text_content.innerHTML = message_input.value;
-        message_history.appendChild(text_content);
+
+        messg_bx.append(user_pfp, text_content);
+
+        message_history.appendChild(messg_bx);
+
+        message_input.value = '';
+        socket.emit('typing-end', ROOM_ID);
     }
 
     socket.on('message-recieved', async (message) => {
@@ -61,11 +82,21 @@ export default async function() {
         let user_info = document.createElement('small');
         let text_content = document.createElement('p');
 
+        let user_box = document.createElement('div');
+        let user_pfp = document.createElement('img');
+
+        user_box.classList.add('message-user-info');
         message_box.classList.add('message', 'other');
         text_content.innerHTML = message.content;
-        user_info.innerHTML = 'from  ' + message.username;
+        user_info.innerHTML = message.username;
+        user_pfp.src = `/api/users/photos/pfp/${message.user_id}`;
+        user_pfp.classList.add('message-pfp');
+    
 
-        message_box.appendChild(user_info);
+        user_box.appendChild(user_pfp);
+        user_box.appendChild(user_info);
+
+        message_box.appendChild(user_box);
         message_box.appendChild(text_content);
 
         message_history.appendChild(message_box);
@@ -74,7 +105,7 @@ export default async function() {
 
     socket.on('client-joined', (client_id, user) => {
 
-        let u_info = document.createElement('p');
+        let u_info = document.createElement('h1');
         u_info.id = 'user-join-flash';
         u_info.classList.add('user-join');
         u_info.innerHTML = 'user ' + user.username + ' joined.'
@@ -89,7 +120,7 @@ export default async function() {
 
         setTimeout(() => {
             alert_box.removeChild(u_info);
-        }, 3000);
+        }, 5000);
     });
 
     socket.on('respond-to-join', (rm_id, sock_id, user) => {
@@ -156,13 +187,38 @@ export default async function() {
 
         setTimeout(() => {
             alert_box.removeChild(friend_alert);
-        }, 3000);
+        }, 10000);
+    });
+
+    // RANDOM CHAT SPECIFIC 
+    socket.on('user-left', (usr) => {
+        alert_box.innerHTML = `<h1>user ${usr.username} left</h1>`
+    });
+
+    socket.on('disconnect', () => {
+        socket.emit('user-left', ROOM_ID, USER);
     })
 
+    // buttons
 
+    next_button.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        socket.emit('user-left', ROOM_ID, USER);
 
-
+        window.location = `${window.location.origin}/random-chat`;
+    });
+    dash_button.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        socket.emit('user-left', ROOM_ID, USER);
+        
+        window.location = `${window.location.origin}/dashboard`;
+    });
+    // MESSAGE INPUT
     message_input.addEventListener('keydown', (ev) => {
+        if (ev.target.value == '' && 
+        (ev.key === 'Delete' || ev.key === 'Backspace' || ev.key === '\n' || ev.key === 'Enter' || ev.keyCode === 13)) {
+            return;
+        }
         if (ev.target.value == '') {
             socket.emit('typing-start', ROOM_ID);
         }
@@ -173,16 +229,20 @@ export default async function() {
             socket.emit('typing-end', ROOM_ID);
         }
     })
-    msg_bar.addEventListener('submit', (ev) => {
+    
+    msg_bar.onsubmit = (ev) => {
         socket.emit('typing-end', ROOM_ID);
-    });
+        message_input.value = '';
+        return true;
+    };
+    console.log(msg_bar);
 
 
     let add_friend = async (ev) => {
         ev.preventDefault();
         let s_id = other_user.user_id || '';
         console.log(other_user.user_id);
-        let request = await (await fetch(`${window.location.origin}/api/friend-requests/${other_user.user_id}`, {
+        let request = await (await fetch(`${window.location.origin}/api/friend-requests`, {
             method: 'POST',
             body: {
                 to_id: other_user.user_id
