@@ -45,10 +45,14 @@ main.user-profile #photo-box {
 }
 
 #drag-box-photo {
+	align-self: center;
 	background-color: lightcyan;
 	border-radius: 10px;
 	padding: 10px;
+	width: min(50%, 700px);
+	height: 300px;
 }
+
 
 /*
 if prefers dark mode
@@ -229,8 +233,11 @@ style chat
 */
 #message-history {
 	display: flex;
-	flex-direction: column;
-	justify-content: flex-end;
+	flex-direction: column-reverse;
+	/*height: minmax(300px, 60vh);*/ 
+	height: 60vh;
+	max-height: 300px;
+	overflow: scroll;
 }
 
 .message.client {
@@ -324,7 +331,26 @@ body.random-chat main{
 
 body.dashboard nav {
 	margin-top: 20px;
+	display: flex;
+	flex-direction: column;
 }
+
+body.dashboard nav ul {
+	max-height: auto;
+	overflow: scroll;
+}
+
+body.dashboard {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-template-rows: auto 1fr;
+	gap: 30px;
+}
+
+body.dashboard header{
+	grid-column-start: 1;
+	grid-column-end: 3;
+} 
 
 .profile-pic{
 	width: 80px;
@@ -367,19 +393,6 @@ main.user-profile {
 	padding: 25px;
 	gap: 10px;
 };
-
-
-#drag-box-photo {
-	align-self: center;
-	max-width: 600px;
-	width: 50%;
-	min-width: 500px;
-	min-height: 150px;
-	margin: 10px;
-	display: flex;
-	flex-direction: column;
-
-}
 
 #drag-box-photo form {
 	display: flex;
@@ -494,11 +507,12 @@ img.user-info-profile-pic {
 	border-radius: 50%;
 };
 
-#user-p-info {
+.user-p-info {
 	display: flex;
 	flex-direction: column;
 	padding: 20px;
 	align-items: center;
+	align-content: center;
 }
 
 #u-info-pfp {
@@ -522,5 +536,54 @@ img.user-info-photo {
 }
 
 #user-bio p {
-	
+
+}
+
+#user-bio {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#user-info-main {
+	gap: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#user-info-main sect {
+	max-width: 1000px;
+	align-self: center;
+}
+
+/* GROUP MESSAGE */ 
+
+.group-img {
+	height: 35px;
+	width: 35px;
+	padding: 5px;
+}
+
+
+#chats-list {
+	width: 20vw;
+	max-width: 250px;
+}
+
+.group-chat {
+	display: grid;
+	grid-template-columns: auto auto;
+	grid-template-rows: auto auto;
+}
+
+.group-chat small {
+	grid-row: 2 / 3;
+	grid-column: 1 / 3;
+	font-size: calc(4pt + 0.3vw);
+}
+.group-chat p {
+	grid-row: 1 / 2;
+	grid-column: 2 / 3;
+	font-size: calc(4pt + 0.45vw);
 }

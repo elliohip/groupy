@@ -80,7 +80,7 @@ module.exports.get_pic_by_id = async_handler(async (req, res, next) => {
         }
     }
     console.log(`${file_path}/uploads/user/${req.session.user_id}/${req.query.photo_id}`)
-    return res.sendFile(`${file_path}/uploads/user/${req.session.user_id}/${req.query.photo_id}`
+    res.sendFile(`${file_path}/uploads/user/${req.session.user_id}/${req.query.photo_id}`
     , cb_one);
     
 });
@@ -104,7 +104,7 @@ module.exports.get_user_pic_by_id = async_handler(async (req, res, next) => {
         }
     }
     console.log(`${file_path}/uploads/user/${req.query.user_id}/${req.params.photo_id}`)
-    return res.sendFile(`${file_path}/uploads/user/${req.query.user_id}/${req.params.photo_id}`
+    res.sendFile(`${file_path}/uploads/user/${req.query.user_id}/${req.params.photo_id}`
     , cb_one);
 });
 
@@ -121,9 +121,10 @@ module.exports.get_pfp_by_id =async_handler( async (req, res, next) => {
     
     let cb_one = (err) => {
         if (err) {
-            console.log(err);
+            res.sendFile(`profile-round-1346-svgrepo-com.svg`,{
+                root:  `${file_path}/uploads/default`
+            }, cb_two);
         }
-        // next(err);
     }
     console.log(user);
 

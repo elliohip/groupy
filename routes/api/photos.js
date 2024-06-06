@@ -34,7 +34,7 @@ const user_pfp_storage = multer.diskStorage({
         else {
             console.log(file);
             let n = `${v4()}${path.extname(file.destination + '/' + file.originalname)}`;
-            cb(null, n)
+            cb(null, n);
         }
     }
 });
@@ -50,7 +50,7 @@ router.get('/user-photos', register_controller.authenticate_user, photo_controll
 
 router.get('/get-user-pic/:photo_id', register_controller.authenticate_user, photo_controller.get_user_pic_by_id);
 
-router.get('/pfp/:user_id', register_controller.authenticate_user, photo_controller.get_pfp_by_id);
+router.get('/pfp-by-id/:user_id', register_controller.authenticate_user, photo_controller.get_pfp_by_id);
 
 router.post('/',register_controller.authenticate_user, upload.single('photo_up'), photo_controller.add_picture);
 

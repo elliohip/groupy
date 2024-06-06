@@ -60,3 +60,56 @@ export async function render_group(group_id) {
     };
 
 }
+
+export async function get_groups() {
+    let data = await (await fetch(`${window.location.origin}/api/groups`, {
+        method: 'GET'
+    })).json();
+
+    if (data.message) {
+        let p = document.createElement('p');
+        p.innerHTML = 'no groups';
+        return p;
+    }
+
+    return data;
+
+}
+
+/**
+ * 
+ * @param {String[]} group_ids 
+ */
+export async function render_groups(group_ids) {
+
+    let temp  = `
+    <li class="group-tab">
+        <img class="group-pic">
+        <p class="group-name">
+        </p>
+        <p class="latest-message">
+        </p>
+    </li>
+    `
+
+    for (let i = 0; i < group_ids.length; i++) {
+        let g = await (await fetch(`${window.location.origin}/api/groups/${group_ids[i]}`, {
+        method: 'GET'
+        })).json();
+
+        if ((g.message)) {
+            break;
+        }
+        let l = document.createElement('li');
+        let grp_nm = document.createElement('p');
+        let latest_msg = document.createElement('p');
+
+        
+
+
+
+
+    }
+
+    return 
+}

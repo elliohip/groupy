@@ -15,6 +15,7 @@ export default async function() {
     var other_user = {
    
     }
+    
     let message_history = document.getElementById('message-history');
     let send_btn = document.getElementById('send-message-btn');
 
@@ -39,7 +40,7 @@ export default async function() {
     let dash_button = document.getElementById('return-to-dash');
 
     socket.on('connect', () => {
-        socket.emit('join-random-room', ROOM_ID, socket.id, USER);
+        socket.emit('join-random-room', SOCK_ROOM_ID, socket.id, USER);
     });
 
     console.log(USER);
@@ -50,7 +51,7 @@ export default async function() {
         if (message_input.value == '') {
             return;
         }
-        socket.emit('send-message', ROOM_ID, {
+        socket.emit('send-message', SOCK_ROOM_ID, {
             username: USER.username,
             content: message_input.value,
             user_id: USER.user_id
@@ -62,7 +63,7 @@ export default async function() {
         let user_pfp = document.createElement('img');
 
         user_pfp.classList.add('message-pfp');
-        user_pfp.src = `/api/users/photos/pfp/${USER.user_id}`
+        user_pfp.src = `/api/users/photos/pfp-by-id/${USER.user_id}`
 
         messg_bx.classList.add('message', 'client');
         text_content.classList.add('message-text', 'client');
@@ -73,7 +74,7 @@ export default async function() {
         message_history.appendChild(messg_bx);
 
         message_input.value = '';
-        socket.emit('typing-end', ROOM_ID);
+        socket.emit('typing-end', SOCK_ROOM_ID);
     }
 
     socket.on('message-recieved', async (message) => {
@@ -89,7 +90,7 @@ export default async function() {
         message_box.classList.add('message', 'other');
         text_content.innerHTML = message.content;
         user_info.innerHTML = message.username;
-        user_pfp.src = `/api/users/photos/pfp/${message.user_id}`;
+        user_pfp.src = `/api/users/photos/pfp-by-id/${message.user_id}`;
         user_pfp.classList.add('message-pfp');
     
 
@@ -116,7 +117,7 @@ export default async function() {
         other_user.user_id = user.user_id;
         other_user.socket_id = client_id;
 
-        socket.emit('respond-to-join', ROOM_ID, socket.id, USER);
+        socket.emit('respond-to-join', SOCK_ROOM_ID, socket.id, USER);
 
         setTimeout(() => {
             alert_box.removeChild(u_info);
@@ -196,20 +197,20 @@ export default async function() {
     });
 
     socket.on('disconnect', () => {
-        socket.emit('user-left', ROOM_ID, USER);
+        socket.emit('user-left', SOCK_ROOM_ID, USER);
     })
 
     // buttons
 
     next_button.addEventListener('click', async (ev) => {
         ev.preventDefault();
-        socket.emit('user-left', ROOM_ID, USER);
+        socket.emit('user-left', SOCK_ROOM_ID, USER);
 
         window.location = `${window.location.origin}/random-chat`;
     });
     dash_button.addEventListener('click', async (ev) => {
         ev.preventDefault();
-        socket.emit('user-left', ROOM_ID, USER);
+        socket.emit('user-left', SOCK_ROOM_ID, USER);
         
         window.location = `${window.location.origin}/dashboard`;
     });
@@ -220,18 +221,18 @@ export default async function() {
             return;
         }
         if (ev.target.value == '') {
-            socket.emit('typing-start', ROOM_ID);
+            socket.emit('typing-start', SOCK_ROOM_ID);
         }
         
     });
     message_input.addEventListener('keyup', (ev) => {
         if (ev.target.value == '') {
-            socket.emit('typing-end', ROOM_ID);
+            socket.emit('typing-end', SOCK_ROOM_ID);
         }
     })
     
     msg_bar.onsubmit = (ev) => {
-        socket.emit('typing-end', ROOM_ID);
+        socket.emit('typing-end', SOCK_ROOM_ID);
         message_input.value = '';
         return true;
     };
@@ -242,11 +243,8 @@ export default async function() {
         ev.preventDefault();
         let s_id = other_user.user_id || '';
         console.log(other_user.user_id);
-        let request = await (await fetch(`${window.location.origin}/api/friend-requests`, {
-            method: 'POST',
-            body: {
-                to_id: other_user.user_id
-            }
+        let request = await (await fetch(`${window.location.origin}/api/friend-requests?to_id=${other_user.user_id}`, {
+            method: 'POST'
         })).json()
         socket.emit('add-friend', socket.id, USER, other_user.socket_id);
 

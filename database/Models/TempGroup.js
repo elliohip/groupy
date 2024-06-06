@@ -7,11 +7,10 @@ var schema = new mongoose.Schema({
         type: String
     },
     users: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }],
+        type: String,
+    }]
 });
 
-const Group = mongoose.model('Group', schema);
+const TempGroup = mongoose.model('TempGroup', schema);
 
-module.exports = Group;
+module.exports = TempGroup;

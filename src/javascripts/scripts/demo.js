@@ -24,11 +24,45 @@ export default async function() {
      */
     let message_input = document.getElementById('message-input');
 
-    socket.emit('join-demo-room', ROOM_ID);
+    socket.on('connect', () => {
+        socket.emit('join-demo-room', SOCK_ROOM_ID);
+    });
+
+    //socket.on('disconnect', () => {
+    //    socket.emit('demo-left', ROOM_ID);
+    //});
+
+    let unload_func_help = (respo) => {
+
+        if (respo.toLowerCase() == 'yes' || respo.toLowerCase() == 'y') {
+            return;
+        }
+        else if (respo.toLowerCase() == 'no' || respo.toLowerCase() == 'n') {
+            return 'no';
+        }
+        else {
+            let respo2 = prompt('Answer must be y or n. Are you sure you want to leave? (yes/y or no/n)');
+            unload_func_help(respo2);
+        }
+        return;
+    }
+    window.addEventListener('beforeunload', (event) => {
+        event.preventDefault();
+        socket.emit('user-left', SOCK_ROOM_ID);
+        event.returnValue = true;
+        return true;
+    })
+
+    // socket.on('close')
+
+    socket.on('user-left', (user) => {
+        console.log(user);
+        alert_box.innerHTML = "<h1> User Left </h1>"
+    });
 
     let send_listener = (ev) => {
         ev.preventDefault();
-        socket.emit('send-message', ROOM_ID, {
+        socket.emit('send-message', SOCK_ROOM_ID, {
             content: message_input.value
         });
 
@@ -38,7 +72,7 @@ export default async function() {
         text_content.innerHTML = message_input.value;
         message_history.appendChild(text_content);
 
-        socket.emit('typing-end', ROOM_ID);
+        socket.emit('typing-end', SOCK_ROOM_ID);
         message_input.value = '';
     }
 
@@ -82,17 +116,17 @@ export default async function() {
 
     message_input.addEventListener('keydown', (ev) => {
         if (ev.target.value == '') {
-            socket.emit('typing-start', ROOM_ID);
+            socket.emit('typing-start', SOCK_ROOM_ID);
         }
         
     });
     message_input.addEventListener('keyup', (ev) => {
         if (ev.target.value == '') {
-            socket.emit('typing-end', ROOM_ID);
+            socket.emit('typing-end', SOCK_ROOM_ID);
         }
     })
     msg_bar.addEventListener('submit', (ev) => {
-        socket.emit('typing-end', ROOM_ID);
+        socket.emit('typing-end', SOCK_ROOM_ID);
     });
     
     

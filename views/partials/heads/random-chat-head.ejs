@@ -2,6 +2,10 @@
     <title>rando-chat</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script>
+        /**
+         * socket room id, for interaction with socket.io server (for avoiding collisions)
+        **/
+        const SOCK_ROOM_ID = '<%= sock_rm_id %>';
         const ROOM_ID = '<%= room_id %>'
         var USER = {
             user_id: '<%= user.user_id %>',

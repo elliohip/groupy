@@ -23,21 +23,11 @@ module.exports.sign_up = async_handler(async (req, res, next) => {
         hashed_password: encrypted_pass,
         email: String(req.body.email)
     });
+    req.session.user_id = user.id;
+    req.session.email = user.email;
+    req.session.username = user.username;
 
-    let log_user = {
-        user_id: user.id,
-        email: user.email,
-        username: user.username
-    }
-    req.login(log_user,(err) => {
-        if (err) {
-            console.log(err);
-            throw err;
-        }
-        // res.redirect(`/dashboard`);
-
-        
-    });
+    res.redirect('/dashboard');
 
 });
 
@@ -57,6 +47,7 @@ module.exports.log_in = async_handler(async (req, res, next) => {
     req.session.user_id = log_user.user_id;
     req.session.username = log_user.username;
     req.session.email = log_user.email;
+    req.session.domain = log_user.email.split('@')[1];
 
     return res.redirect('/dashboard');
     /*
@@ -80,13 +71,11 @@ module.exports.authenticate_user_strict  = async_handler((req, res, next) => {
 
 module.exports.authenticate_user = async_handler(async (req, res, next) => {
     if (!req.session.user_id) {
-        res.json({message: 'error, no user'});
+        // res.json({message: 'error, no user'});
+        res.redirect('/log-in');
         next(new Error('no user'))
     }
-    console.log('req_params: ' + JSON.stringify(req.params));
-    console.log('body: ' + JSON.stringify(req.body));
-    console.log('query_params: ' + JSON.stringify(req.query));
-    // console.log(req.headers);
+    console.log(req.url);
     next();
 });
 
@@ -101,7 +90,13 @@ module.exports.authenticate_native = async_handler(async (req, res, next) => {
 module.exports.authenticate_user_strict_q  = async_handler((req, res, next) => {
     if (req.session.user_id != String(req.query.user_id)) {
         console.log({message: 'not user'});
-        return next(new Error('not user'))
+        return next(new Error('not user'));
     }
     next();
 });
+
+module.exports.authenticate_temp = async_handler(async (req, res, next) => {
+    if (!req.session.temp_user_id) {
+        return res.redirect('/temp-login');
+    }
+})

@@ -12,13 +12,18 @@ module.exports.render_user_dashboard = async_handler(async (req, res, next) => {
 });
 
 module.exports.render_demo = async_handler(async (req, res, next) => {
+    let rm_id = String(req.params.room_id).split('-')[1];
     res.render('demo', {
-        room_id: req.params.room_id
+        room_id: rm_id,
+        sock_rm_id: String(req.params.room_id)
     });
 });
 
 module.exports.render_random_chat = async_handler(async (req, res, next) => {
     console.log(req.session);
+
+    let rm_id = String(req.params.room_id).split('-')[1];
+    
 
     let data_obj = {
         username: req.session.username,
@@ -26,8 +31,9 @@ module.exports.render_random_chat = async_handler(async (req, res, next) => {
         email: req.session.email
     }
     res.render('random-chat', {
-        room_id: req.params.room_id,
-        user: data_obj
+        room_id: rm_id,
+        user: data_obj,
+        sock_rm_id: String(req.params.room_id)
     });
 });
 

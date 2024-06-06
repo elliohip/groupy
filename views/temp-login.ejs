@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <%- include('partials/heads/common-head.ejs') %>
+  <body class="log-in">
+    <header class="log-in">
+      <h1> campus-connection </h1>
+      <nav class="button-box">
+        <a href="/log-in" class="button"> log in </a>
+        <a href="/sign-up" class="button"> sign up </a>
+      </nav>
+    </header>
+    <main class="log-in">
+        <form method="POST" action="/register/temp-login" id="log-in">
+            <label> username
+                <input type="text" name="username">
+            </label>
+            <input type="submit" value="log in" id="login-button">
+        </form>
+    </main>
+    <footer class="log-in"></footer>
+  </body>
+</html>

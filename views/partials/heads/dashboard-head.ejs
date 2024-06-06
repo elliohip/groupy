@@ -2,7 +2,10 @@
     <title>rando-chat</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script>
-        const USER_ID = '<%= user_id %>';
+        const USER = {
+            user_id: '<%= user_id %>',
+            username: '<%= username %>'
+        };
         const USERNAME = '<%= username %>';
     </script>
     <script src="/dist/main.bundle.js" type="module"></script>

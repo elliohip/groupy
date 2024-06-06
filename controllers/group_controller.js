@@ -4,46 +4,37 @@ const User = require('../database/Models/User');
 
 var group_map = require('../global_objects/group_map');
 const { v4 } = require('uuid');
+const GroupPhoto = require('../database/Models/GroupPhoto');
+
+const path = require('path');
 
 module.exports.get_group = async_handler(async (req, res, next) => {
     let group = await Group.findById(String(req.params.group_id));
 
+    if (!(group.users.includes(req.session.user_id))) {
+        res.json({message: 'not in group'})
+    }
+    
     res.json(group);
 });
 
 
 
 module.exports.get_user_groups = async_handler(async (req, res, next) => {
-    let groups = (await User.findById(req.user.user_id)).groups;
-    let get_runtime_group = (g_id) => {
+    let groups = (await Group.find({
+        users: req.session.user_id
+    }));
 
-        if (!group_map.has(g_id)) {
-            let run_g_id = v4();
-            group_map.set(g_id, run_g_id);
-            return run_g_id;
-        }
-        return group_map.get(g_id);
+    if (groups.length == 0) {
+        return res.json({message: 'no groups'});
     }
 
-    /**
-     * @type {{solid_id: String, runtime_id: String}[]}
-     */
-    let response_data = [];
-
-    for (let group in groups) {
-        let group_run_id = get_runtime_group(group);
-        response_data.push({
-            solid_id: group,
-            runtime_id: group_run_id
-        });
-    }
-
-    res.json(response_data);
+    res.json(groups);
 
 });
 
 module.exports.update_group = async_handler(async (req, res, next) => {
-
+    
 });
 
 module.exports.delete_group = async_handler(async (req, res, next) => {
@@ -55,14 +46,19 @@ module.exports.delete_group = async_handler(async (req, res, next) => {
  * seperated string that gets tokenized into the ids
  */
 module.exports.create_group = async_handler(async (req, res, next) => {
-    let users_arr = String(req.body.users).split(',');
-    let nm = req.body.group_name | `${users_arr[0]}, ${users_arr[1]}`;
-    let group = await Group.create({
-        group_name: nm,
+    let users_arr = [req.session.user_id, req.query.friend_id];
+    if (!req.query.group_name) {
+        Group.create({
+            group_name: `${users_arr[0]}, ${users_arr[1]}`,
+            users: users_arr
+        })
+        return next();
+    }
+    Group.create({
+        group_name: req.query.group_name,
         users: users_arr
     });
-
-    res.json(group);
+    return next();
 });
 
 module.exports.create_group_with_query = async_handler(async(req, res, next) => {
@@ -79,4 +75,56 @@ module.exports.create_group_with_query = async_handler(async(req, res, next) => 
         users: users_arr
     });
     return next();
+});
+
+module.exports.create_group_photo = async_handler(async (req, res, next) => {
+    console.log(req.file.filename);
+    let grp_photo = await GroupPhoto.create({
+        group_id: req.params.group_id,
+        file_name: req.file.filename
+    });
+    res.json({
+        message: 'photo created'
+    });
+});
+
+module.exports.get_group_photo = async_handler(async (req, res, next) => {
+    let cb_two = (err) => {
+        if (err) {
+            console.log(err);
+        }
+    }
+    let cb_one = (err) => {
+        if (err) {
+            res.sendFile(`group-svgrepo-com.svg`,{
+                root:  `${file_path}/uploads/default`
+            }, cb_two);
+        }
+    }
+    console.log(`${file_path}/uploads/group/${req.params.group_id}/group-photo/${req.params.photo_id}`);
+    let group = await Group.findById(req.params.group_id);
+    // return res.sendFile(`${file_path}/uploads/group/${req.params.group_id}/group-photo/${}`
+    // , cb_one);
+    
+});
+
+module.exports.add_user = async_handler(async(req, res, next) => {
+    let group = await Group.findById(req.params.group_id);
+    if (!group) {
+        return res.json({
+            message: "no group"
+        });
+    }
+    group.users.push(req.body.user_id);
+    await group.save();
+});
+
+module.exports.get_group_photo_default = async_handler(async (req, res, next) => {
+    try {
+        return res.sendFile(path.resolve(`./uploads/default/group-svgrepo-com.svg`), (err) => {
+            console.log(err);
+        });
+    } catch (err) {
+        console.log(err);
+    }
 });

@@ -3,6 +3,7 @@ var router = express.Router();
 var user_controller = require('../../controllers/user_controller');
 var register_controller = require('../../controllers/register_controller');
 var photos_router = require('./photos');
+var direct_message_router = require('./direct_messages.js');
 
 // router.use(express.json());
 
@@ -14,10 +15,14 @@ router.get('/:user_id', register_controller.authenticate_user, user_controller.g
 
 router.get('/:user_id/friends', register_controller.authenticate_user, user_controller.get_user_friends);
 
-router.put('/:user_id', );
+// router.put('/:user_id', );
 
 
-router.delete('/:user_id', );
+// router.delete('/:user_id', );
+
+// router.post('/remove-friend/by-query', register_controller.authenticate_user, user_controller.remove_friend_query);
+
+router.put('/:user_id/remove-friend-q', register_controller.authenticate_user, user_controller.remove_friend_query);
 
 // router.get('/:messages', );
 
@@ -26,7 +31,7 @@ router.delete('/:user_id', );
 
 // this route requires user_id in the search params
 router.use('/photos', photos_router);
+router.use('/direct-messages', register_controller.authenticate_user_strict, direct_message_router);
 
-router.post('/remove-friend/by-query', register_controller.authenticate_user, user_controller.remove_friend_query);
 
 module.exports = router;

@@ -26,5 +26,5 @@ async function disconnect() {
 // Export the connect and getDatabase functions
 module.exports = {
   connect,
-  connection
+  disconnect
 };

@@ -1,12 +1,13 @@
 const User = require('../database/Models/User');
 const FriendRequest = require('../database/Models/FriendRequest');
 
-const async_handler = require('express-async-handler')
+const async_handler = require('express-async-handler');
+const DirectMessageHistory = require('../database/Models/DirectMessageHistory');
 
-module.exports.create_friend_request = async_handler(async (req, res, next) => {
+module.exports.create_friend_request_q = async_handler(async (req, res, next) => {
     console.log(req.body);
 
-    let check_is_friend = (await User.findById(req.session.user_id)).friends.includes(req.body.to_id);
+    let check_is_friend = (await User.findById(req.session.user_id)).friends.includes(req.query.to_id);
 
     if (check_is_friend) {
         return res.json({message: 'already friends'});
@@ -14,10 +15,11 @@ module.exports.create_friend_request = async_handler(async (req, res, next) => {
 
     let check_exists = await FriendRequest.findOne({
         from_id: req.session.user_id,
-        to_id: req.body.to_id
+        to_id: req.query.to_id
     });
+
     let check_other_req = await FriendRequest.findOne({
-        from_id: req.body.to_id,
+        from_id: req.query.to_id,
         to_id: req.session.user_id
     });
 
@@ -33,10 +35,10 @@ module.exports.create_friend_request = async_handler(async (req, res, next) => {
         check_other_req.save();
         await User.findByIdAndUpdate(req.session.user_id, {
             $push: {
-                friends: req.body.to_id
+                friends: req.query.to_id
             }
         });
-        await User.findByIdAndUpdate(req.body.to_id, {
+        await User.findByIdAndUpdate(req.query.to_id, {
             $push: {
                 friends: req.session.user_id
             }
@@ -47,7 +49,7 @@ module.exports.create_friend_request = async_handler(async (req, res, next) => {
 
     let friend_req = await FriendRequest.create({
         from_id: req.session.user_id,
-        to_id: req.body.to_id,
+        to_id: req.query.to_id,
         accepted: false,
         rejected: false
     });
@@ -61,73 +63,73 @@ module.exports.create_friend_request = async_handler(async (req, res, next) => {
  */
 module.exports.accept_friend_request = async_handler(async (req, res, next)=> {
 
-    let friend_request = await FriendRequest.findByIdAndUpdate(req.params.friend_request_id, {
-        accepted: true
+    let friend_request = await FriendRequest.findById(req.params.friend_request_id);
+
+    let to_u = await User.findById(friend_request.to_id);
+
+    let from_u = await User.findByIdAndUpdate(friend_request.from_id);
+
+    if (to_u.friends.includes(friend_request.from_id) && from_u.friends.includes(friend_request.from_id)) { // if both are friends, send the message, and return
+        
+        return res.json( {message: 'already friends'} );
+
+    } else if (to_u.friends.includes(friend_request.from_id) && !from_u.friends.includes(friend_request.from_id)) { // if only to has friend
+
+        from_u.friends.push(friend_request.to_id);
+        await from_u.save();
+        return res.json({
+            message: 'done'
+        });
+
+    } else if (!to_u.friends.includes(friend_request.from_id) && from_u.friends.includes(friend_request.from_id)) { // if only from has friend
+
+        to_u.friends.push(friend_request.from_id);
+        await to_u.save();
+        return res.json({
+            message: 'done'
+        });
+
+    }
+
+    to_u.friends.push(friend_request.from_id);
+    from_u.friends.push(friend_request.to_id);
+    await to_u.save();
+    await from_u.save();
+
+    friend_request.accepted = true;
+    friend_request.rejected = false;
+
+    await friend_request.save();
+
+    await DirectMessageHistory.create({
+        users: [friend_request.to_u, friend_request.from_u]
     });
 
-    let to_friend_instance = await User.findByIdAndUpdate(friend_request.to_id, {
-        $push: {
-            friends: friend_request.from_id,
-        }
-    });
-    let from_friend_instance = await User.findByIdAndUpdate(friend_request.from_id, {
-        $push: {
-            friends: friend_request.to_id,
-        }
-    });
+    res.json({message: 'done'});
 
-    return next();
-    /**
-     * automatically makes a group with the two 
-     * friends
-     
-    let group = await (await fetch(`${process.env.BASE_PATH}/api/groups/`, {
-        method: 'POST',
-        body: {
-            group_name: 'new group',
-            users: [friend_request.from_id, friend_request.to_id]
-        }
-    })).json();
-
-    
-
-    // friend array update
-    let to_friend_instance = await User.findByIdAndUpdate(friend_request.to_id, {
-        $push: {
-            friends: friend_request.from_id,
-            groups: group.id
-        }
-    });
-    let from_friend_instance = await User.findByIdAndUpdate(friend_request.from_id, {
-        $push: {
-            friends: friend_request.to_id,
-            groups: group.id
-        }
-    });
-
-    res.status(200);
-    return next();
-    */
 });
 
 module.exports.reject_friend_request = async_handler(async (req, res, next) => {
     let friend_request = await FriendRequest.findByIdAndUpdate(req.params.friend_request_id, {
-        rejected: true
+        rejected: true,
+        accepted: false
     });
     next();
 });
 
 module.exports.get_friend_request = async_handler(async (req, res, next) => {
-
-})
+    let f_r = await FriendRequest.findById(req.params.request_id);
+    res.json(f_r);
+});
 
 module.exports.update_friend_request = async_handler(async (req, res, next) => {
-
-})
+    next();
+});
 
 module.exports.delete_friend_request = async_handler(async (req, res, next) => {
-
-})
+    await FriendRequest.findByIdAndDelete(req.params.friend_request_id);
+    next();
+});
 
 module.exports.get_friend_requests_to = async_handler(async (req, res, next) => {
     let friend_requests = await FriendRequest.find({
@@ -146,3 +148,4 @@ module.exports.get_friend_requests_from = async_handler(async (req, res, next) =
     }).populate();
     res.json(friend_requests);
 });
+

@@ -1,0 +1,6 @@
+- change from loading css in one file to multiple files based
+on what page it is
+
+- Finish Group and Message functionality Front and backend
+
+- Implement Rate limiting, proxy server, etc

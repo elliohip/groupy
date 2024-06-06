@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const registerController = require('../controllers/register_controller');
 const passport = require('../global_objects/configured_passport');
+const { v4 } = require('uuid');
 
 router.post('/sign-up', 
 registerController.sign_up, (req, res, next) => {

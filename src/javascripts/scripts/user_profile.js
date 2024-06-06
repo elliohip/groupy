@@ -37,7 +37,7 @@ async function render_photos(ev) {
     let photo_box = document.createElement('div');
     photo_box.id = 'photo-box';
 
-    let photos = (await (await fetch(`${window.location.origin}/api/users/photos/user-photos?user_id=${USER_ID}`, {method:'GET'})).json());
+    let photos = (await (await fetch(`${window.location.origin}/api/users/photos/user-photos?user_id=${USER.user_id}`, {method:'GET'})).json());
 
     let render_photo_function = (photo_id) => {
         // let load_div = document.createElement('div');
@@ -46,7 +46,7 @@ async function render_photos(ev) {
         let photo = document.createElement('img');
         photo.classList.add('user-profile-photo', 'loading');
 
-        photo.src=`${window.location.origin}/api/users/photos/by-id?user_id=${USER_ID}&photo_id=${photo_id}`;
+        photo.src=`${window.location.origin}/api/users/photos/by-id?user_id=${USER.user_id}&photo_id=${photo_id}`;
 
         return {
             photo
@@ -209,9 +209,11 @@ async function render_friend_requests(ev) {
     let requests = await (await fetch(`${window.location.origin}/api/friend-requests/${USER.user_id}/to`)).json();
 
     for (let i = 0; i < requests.length; i++) {
+
         let request = requests[i];
-        let user = await ((await fetch(`${window.location.origin}/api/users/${request.from_id}`)).json());
+        let user = await (await fetch(`${window.location.origin}/api/users/${request.from_id}`)).json();
         list.appendChild(render_friend_request(request, user));
+        
     }
 
     profile_info.appendChild(list);
