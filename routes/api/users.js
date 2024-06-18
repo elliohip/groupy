@@ -8,7 +8,7 @@ var direct_message_router = require('./direct_messages.js');
 // router.use(express.json());
 
 /* GET users listing. */
-router.get('/', );
+// router.get('/', );
 
 
 router.get('/:user_id', register_controller.authenticate_user, user_controller.get_user);
@@ -31,7 +31,7 @@ router.put('/:user_id/remove-friend-q', register_controller.authenticate_user, u
 
 // this route requires user_id in the search params
 router.use('/photos', photos_router);
-router.use('/direct-messages', register_controller.authenticate_user_strict, direct_message_router);
+router.use('/:user_id/direct-messages', register_controller.authenticate_user_strict_q, direct_message_router);
 
 
 module.exports = router;

@@ -102,7 +102,7 @@ module.exports.accept_friend_request = async_handler(async (req, res, next)=> {
     await friend_request.save();
 
     await DirectMessageHistory.create({
-        users: [friend_request.to_u, friend_request.from_u]
+        users: [to_u.id, from_u.id]
     });
 
     res.json({message: 'done'});

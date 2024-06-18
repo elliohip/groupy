@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <%- include('partials/heads/dashboard-head.ejs') %>
+    <body class="direct-messages">
+        <header>
+        <a id="dashboard-btn" href="/dashboard">
+            <img src="/<%= `assets/arrow-left-svgrepo-com.svg` %>" class="profile-pic">
+            <p>
+            back to dashboard
+            </p>
+        </a>
+        </header>
+        <nav id="direct-messages-nav">
+        <ol id="chats-list">
+
+        </ol>
+        <a class="button" id="random-chat" href="/random-chat">random chat</a>
+        </nav>
+        <div class="direct-messages" id="main-display">
+        
+        </div>
+        <footer>
+
+        </footer>
+    </body>
+</html>

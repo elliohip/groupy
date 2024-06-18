@@ -57,3 +57,9 @@ module.exports.render_user_info = async_handler(async (req, res, next) => {
     let pics = imgs.join('\n');
     res.render('user-info', {user: usr, photos: pics});
 });
+
+module.exports.render_direct_messages = (req, res, next) => {
+    res.render("direct-messages", {
+        user_id: req.session.user_id, username: req.session.username
+    });
+}

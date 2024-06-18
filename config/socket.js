@@ -110,8 +110,14 @@ module.exports.init_io = (http_server) => {
             console.log(room_id);
 
             try {
-                // let objid = ObjectId.createFromHexString(room_id.split('-')[1]);
-                await TempChat.findByIdAndDelete(room_id);
+                /**
+                 * @type {String}
+                 */
+                let rom_type = room_id.split('-')[0];
+                let objid = room_id.split('-')[1];
+                if (rom_type.toLowerCase() != "group") {
+                    await TempChat.findByIdAndDelete(objid);
+                }
                 
             } catch(err) {
                 console.log(err);
@@ -145,6 +151,9 @@ module.exports.init_io = (http_server) => {
 
         socket.on('join-group', async (group_id, username, user_id, socket_id) => {
             let g_id = group_id.split('-')[1];
+            if (group_id.split('-')[0] == "DMHistory") {
+                return socket.join(group_id);
+            }
             try {
                 let g = await Group.findById(g_id);
                 if (!(g.users.includes(user_id))) {
@@ -193,15 +202,15 @@ module.exports.init_io = (http_server) => {
                 text: message.text,
                 username: message.username
             }
+            console.log(`total groups:`);
+            for (let sockt in socket.rooms.entries()) {
+                console.log(sockt);
+            }
             console.log(`message to group <${grp_id}> `)
+            console.log(`total groups:`);
+            
             socket.broadcast.to(group_id).emit('message-from-group', grp_id, message_info);
-
-            let msg = await Message.create({
-                user_id: message.user_id,
-                group_id: grp_id,
-                text: message.text,
-                username: message.username
-            });
+            
         });
 
     });

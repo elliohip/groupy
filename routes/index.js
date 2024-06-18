@@ -103,4 +103,6 @@ router.get('/user-profile', register_controller.authenticate_user, index_control
 
 router.get('/user-info/:user_id', register_controller.authenticate_user, index_controller.render_user_info)
 
+router.get('/view-direct-messages', register_controller.authenticate_user, index_controller.render_direct_messages);
+
 module.exports = router;

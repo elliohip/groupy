@@ -112,10 +112,7 @@ module.exports.get_user_pic_by_id = async_handler(async (req, res, next) => {
  * 
  */
 module.exports.get_pfp_by_id =async_handler( async (req, res, next) => {
-    console.log(req.params);
-    //let url = new URL(req.url);
     
-    console.log(req.session)
     let user = await User.findById(req.params.user_id);
 
     

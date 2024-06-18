@@ -11,7 +11,7 @@ module.exports.get_messages = async_handler(async (req, res, next) => {
     let messages = await Message.find({
         group_id: req.params.group_id,
         createdAt: {
-            $lt: Date.now()
+            $lt: Number(req.query.current_time)
         }
     });
     
@@ -68,14 +68,27 @@ module.exports.delete_message = async_handler(async (req, res, next) => {
 })
 
 module.exports.create_message = async_handler(async (req, res, next) => {
+    
+    console.log(req.body)
+    console.log(`\n\n
+        ALL PARAMS: 
+        grp: ${req.body.group_id}
+        usr: ${req.body.user_id}
+        txt: ${req.body.text}
+        \n\n`);
 
-    let message = await Message.create({
-        group_id: req.params.group_id,
-        user_id: req.session.user_id,
-        text: req.body.text
+        try {
+        let message = await Message.create({
+            group_id: req.params.group_id,
+            user_id: req.session.user_id,
+            text: req.query.text,
+            username: req.query.username
         });
-
-    res.json(message);
+        console.log(message)
+        res.json(message);
+        } catch (e) {
+            console.log(e);
+        }
 });
 
 
