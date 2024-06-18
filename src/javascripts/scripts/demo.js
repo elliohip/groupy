@@ -70,7 +70,13 @@ export default async function() {
         // rememeber, one class for message, one class for if its this user or other user
         text_content.classList.add('message', 'client');
         text_content.innerHTML = message_input.value;
-        message_history.appendChild(text_content);
+        
+        if (message_history.firstChild) {
+            message_history.firstChild.before(text_content);
+        }
+        else {
+            message_history.appendChild(text_content);
+        }
 
         socket.emit('typing-end', SOCK_ROOM_ID);
         message_input.value = '';
@@ -82,7 +88,13 @@ export default async function() {
         // rememeber, one class for message, one class for if its this user or other user
         text_content.classList.add('message', 'other');
         text_content.innerHTML = message.content;
-        message_history.appendChild(text_content);
+        if (message_history.firstChild) {
+            message_history.firstChild.before(text_content);
+        }
+        else {
+            message_history.appendChild(text_content);
+        }
+
 
     });
 

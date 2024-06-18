@@ -71,7 +71,13 @@ export default async function() {
 
         messg_bx.append(user_pfp, text_content);
 
-        message_history.appendChild(messg_bx);
+        // message_history.appendChild(messg_bx);
+        if (message_history.firstChild) {
+            message_history.firstChild.before(messg_bx);
+        }
+        else {
+            message_history.appendChild(messg_bx);
+        }
 
         message_input.value = '';
         socket.emit('typing-end', SOCK_ROOM_ID);
@@ -100,7 +106,12 @@ export default async function() {
         message_box.appendChild(user_box);
         message_box.appendChild(text_content);
 
-        message_history.appendChild(message_box);
+        if (message_history.firstChild) {
+            message_history.firstChild.before(message_box);
+        }
+        else {
+            message_history.appendChild(message_box);
+        }
 
     });
 

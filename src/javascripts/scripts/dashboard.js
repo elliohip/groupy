@@ -1,9 +1,9 @@
-import { Socket, io } from "socket.io-client";
+
 import { render_group } from "../services/group_service";
 
 const render_funcs = await import("./renderers/group_chat_renderer");
 
-
+import { GLOBALS } from "../globals";
 
 
 var groups = [];
@@ -40,11 +40,8 @@ var create_group_btn = async (group, socket) => {
 
 }
 
-export default async function () {
+export default async function (socket) {
 
-    let socket = io({
-        host: window.location.origin
-    });
     groups = await get_groups();
     console.log(groups);
     /**
@@ -60,13 +57,17 @@ export default async function () {
         rendered_groups = await render_funcs.render_chat_bar(socket, groups);
         await render_funcs.render_group_chat(socket, groups[0]._id);
         current_group_id = 'group-' + groups[0]._id;
+        GLOBALS.http_group_id = groups[0]._id;
+        document.getElementById(current_group_id).classList.add('current-group-selected');
 
         for (let i = 0; i < rendered_groups.length; i++) {
             rendered_groups[i].addEventListener('click', (ev) => {
 
                 document.getElementById(current_group_id).classList.remove('current-group-selected');
                 current_group_id = ev.currentTarget.id;
+                GLOBALS.http_group_id = ev.currentTarget.id.split('-')[1];
 
+                document.getElementById(current_group_id).classList.add('current-group-selected');
                 render_funcs.render_group_chat(socket, ev.currentTarget.id.split('-')[1]);
 
             });

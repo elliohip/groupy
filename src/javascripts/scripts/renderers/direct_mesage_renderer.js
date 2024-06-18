@@ -1,54 +1,108 @@
-import { Socket } from "socket.io-client";
-
 import { GLOBALS } from "../../globals";
 
 /**
  * 
  * @param {String} u_or_o either 'client' or 'other'
  * @param {{
- *  user_id: String,
- *  username: String
- * }} user user that sent message
- * @param {{
- *  value: String
- * }} inpt 
- * @returns 
- */
-const render_group_message = (u_or_o, user, inpt) => {
-    let messg_bx = document.createElement('div');
-    let text_content = document.createElement('p');
-        // rememeber, one class for message, one class for if its this user or other user
-    let user_pfp = document.createElement('img');
+*  user_id: String,
+*  username: String
+* }} user user that sent message
+* @param {{
+*  value: String
+* }} inpt 
+* @returns 
+*/
+export const render_direct_message = (u_or_o, user, inpt) => {
+   let messg_bx = document.createElement('div');
+   let text_content = document.createElement('p');
+       // rememeber, one class for message, one class for if its this user or other user
+   let user_pfp = document.createElement('img');
 
-    let u_info = document.createElement('div');
-    u_info.classList.add('message-user-info');
+   let u_info = document.createElement('div');
+   u_info.classList.add('message-user-info');
 
-    
+   
 
-    let u_nm = document.createElement('small')
-    u_nm.innerHTML = user.username;
+   let u_nm = document.createElement('small')
+   u_nm.innerHTML = user.username;
 
-    user_pfp.classList.add('message-pfp');
-    user_pfp.src = `/api/users/photos/pfp-by-id/${user.user_id}`
+   user_pfp.classList.add('message-pfp');
+   user_pfp.src = `/api/users/photos/pfp-by-id/${user.user_id}`
 
-    u_info.append(user_pfp, u_nm);
+   u_info.append(user_pfp, u_nm);
 
-    messg_bx.classList.add('message', u_or_o);
-    text_content.classList.add('message-text', u_or_o);
-    text_content.innerHTML = inpt.value;
+   messg_bx.classList.add('message', u_or_o);
+   text_content.classList.add('message-text', u_or_o);
+   text_content.innerHTML = inpt.value;
 
-    messg_bx.append(u_info, text_content);
-    return messg_bx;
+   messg_bx.append(u_info, text_content);
+   return messg_bx;
 };
 
 
 /**
+ * renders a li with the id passed through,
+ * this is meant to be inserted into a list of chats
+ * @param {*} group_id String for group id
+ */
+async function render_dm_list_item(dm_history_id) {
+    let dm_history = dm_history_id.messages;
+    
+    // let latest_msg = await (await fetch(`${window.location.origin}/api/messages/${dm_history_id._id}/latest-msg`)).json().text;
+    // console.log(dm_history_id);
+
+    let gc_li = document.createElement('li');
+    gc_li.id = `DMHistory-${dm_history_id._id}`;
+
+    let gc_img = document.createElement('img');
+    gc_img.classList.add('group-img');
+    // gc_img.src = `${window.location.origin}/api/groups/`;
+    gc_img.src = `${window.location.origin}/api/groups/group-photo-default`;
+
+    gc_li.appendChild(gc_img);
+    let current_message_info = document.createElement('p');
+    current_message_info.classList.add('group-name')
+    let o_usr = dm_history_id.users.filter((val) => val != USER.user_id)[0];
+    current_message_info.innerHTML = o_usr;
+
+    let u_msg_content = document.createElement('small');
+    u_msg_content.classList.add('current-message');
+
+    // u_msg_content.innerHTML = latest_msg;
+
+    gc_li.append(current_message_info, u_msg_content);
+
+    gc_li.classList.add('group-chat');
+
+    return gc_li;
+
+}
+
+export const render_direct_message_bars = async (groups) => {
+
+    let groups_list = document.getElementById('chats-list');
+    groups_list.innerHTML = ""
+
+    let rt_list = [];
+    if (groups.length == 0) {
+        groups_list.innerHTML = 'no direct messages';
+    }
+    for (let i = 0; i < groups.length; i++) {
+        let list_item = await render_dm_list_item(groups[i]);
+        groups_list.appendChild(list_item);
+        console.log(groups[i]._id);
+        rt_list.push(list_item);
+    }
+    return rt_list;
+}
+
+/**
  * 
  * @param {Socket} socket 
- * @param {String} curr_room_id string for the id of the current room "group-<GRP_ID>"
- * @param {String} prev_room_id
+ * @param {*} http_grp_id
+ * @param {String} o_user_id
  */
-export async function render_group_chat(socket, http_grp_id) {
+export async function render_direct_message_history(socket, http_grp_id, o_user_id) {
     
     let main_display = document.getElementById('main-display');
     main_display.innerHTML = "";
@@ -72,9 +126,10 @@ export async function render_group_chat(socket, http_grp_id) {
     
     `;
 
-    let curr_room_id = `group-${http_grp_id}`;
+    let curr_room_id = `DMHistory-${http_grp_id._id}`;
 
-    let prev_msgs = await (await fetch(`${window.location.origin}/api/messages/${http_grp_id}/?current_time=${Date.now()}`)).json();
+    let prev_msgs = http_grp_id.messages
+    console.log(prev_msgs);
 
     let message_history = document.getElementById('message-history');
     let send_btn = document.getElementById('send-message-btn');
@@ -101,16 +156,16 @@ export async function render_group_chat(socket, http_grp_id) {
     for (let i = prev_msgs.length - 1; i > 0 ; i--) {
         let c_or_o = '';
 
-        if (prev_msgs[i].user_id == USER.user_id) {
+        if (prev_msgs[i].from_id == USER.user_id) {
             c_or_o = 'client';
         } else {
             c_or_o = 'other';
         }
-        msg_elements.push(render_group_message(c_or_o, {
-            user_id: prev_msgs[i].user_id,
-            username: prev_msgs[i].username
+        msg_elements.push(render_direct_message(c_or_o, {
+            user_id: prev_msgs[i].from_id,
+            username: ""
         }, {
-            value: prev_msgs[i].text
+            value: prev_msgs[i].text_content
         }));
     }
 
@@ -121,16 +176,22 @@ export async function render_group_chat(socket, http_grp_id) {
         }
 
     } else {
+        // message_history.append(...(msg_elements.reverse()));
         if (msg_elements.length > 0) {
             message_history.appendChild(msg_elements[0]);
             msg_elements[0].after(...(msg_elements.slice(1)));
         }
-        
+        /*
+        for (let i = 1; i < msg_elements.length; i++) {
+            msg_elements[i - 1].after()
+            // message_history.insertBefore(msg_elements[i], )
+            
+        }*/
     }
 
-    /* socket.on('connect', () => {
+    socket.on('connect', () => {
         socket.emit('join-group', curr_room_id);
-    }); */
+    }); 
     /* for refactoring
     let check_connected = () => {
         if (socket.connected) {
@@ -139,37 +200,34 @@ export async function render_group_chat(socket, http_grp_id) {
         else {
             setTimeout(check_connected, 10);
         }
-    }
-    */
-    socket.on('connect', () => {
-        socket.emit('join-group', curr_room_id);
-    }); 
+    }*/
     
+
     if (socket.connected) {
         socket.emit('join-group', curr_room_id);
     }
     
     socket.on('message-from-group', (rm_id, message) => {
         // let cur_id = rm_id;
-        console.log(`
-            room_id: room-${rm_id}
-            http_room_id: room-${http_grp_id}
+        console.log(` message from group! 
+            room_id: DMHistory-${rm_id}
+            http_room_id: DMHistory-${http_grp_id._id}
             `);
-
+            
         if (rm_id == GLOBALS.http_group_id) {
-            let messg = render_group_message('other', {
+            let messg = render_direct_message('other', {
                 user_id: message.user_id, 
                 username: message.username
             }, {
                 value: message.text
             });
             message_history.insertBefore(messg, message_history.firstChild);
-            let msg_prev = document.querySelector(`#group-${rm_id} small.current-message`);
+            let msg_prev = document.querySelector(`#DMHistory-${rm_id} small.current-message`);
             console.log(`${message.username}: ${message.text}`)
             msg_prev.innerHTML = `${message.username}: ${message.text}`;
         } else {
             console.log(rm_id);
-            let msg_prev = document.querySelector(`#group-${rm_id} small.current-message`);
+            let msg_prev = document.querySelector(`#DMHistory-${rm_id} small.current-message`);
             console.log(`${message.username}: ${message.text}`)
             msg_prev.innerHTML = `${message.username}: ${message.text}`;
         }
@@ -209,19 +267,20 @@ export async function render_group_chat(socket, http_grp_id) {
             alert("messages can only be 500 chars long");
         }
         console.log(USER.username)
-        let txt_frm_bdy = new FormData();
-        txt_frm_bdy.append("text", message_input.value);
-        await fetch(`${window.location.origin}/api/messages/${http_grp_id}/text-messages?text=${message_input.value}&username=${USER.username}`, {
-            method: "POST",
-            body: txt_frm_bdy,
+        await fetch(`${window.location.origin}/api/users/${USER.user_id}/direct-messages/${http_grp_id._id}/add-message?text=${message_input.value}&username=${USER.username}&user_id=${USER.user_id}&to_id=${o_user_id}&time_created=${Date.now()}`, {
+            method: "PUT",
+            body: {
+                text: message_input.value
+            }
         })
+        console.log("sent to room : " + curr_room_id);
         socket.emit('message-to-group', curr_room_id, {
             user_id: USER.user_id,
             username: USER.username,
             text: message_input.value,
         });
 
-        let text_content = render_group_message('client', {
+        let text_content = render_direct_message('client', {
             user_id: USER.user_id,
             username: USER.username
         }, {
@@ -255,64 +314,3 @@ export async function render_group_chat(socket, http_grp_id) {
     send_btn.addEventListener('click', send_listener);
 
 }
-
-/**
- * renders a li with the id passed through,
- * this is meant to be inserted into a list of chats
- * @param {*} group_id String for group id
- */
-async function render_chat_list_item(group_id) {
-    let group = await ((await fetch(`${window.location.origin}/api/groups/by-id/${group_id._id}`))).json().text;
-    
-    let latest_msg = await (await fetch(`${window.location.origin}/api/messages/${group_id._id}/latest-msg`)).json().text;
-    // console.log(group_id);
-
-    let gc_li = document.createElement('li');
-    gc_li.id = `group-${group_id._id}`;
-
-    let gc_img = document.createElement('img');
-    gc_img.classList.add('group-img');
-    // gc_img.src = `${window.location.origin}/api/groups/`;
-    gc_img.src = `${window.location.origin}/api/groups/group-photo-default`;
-
-    gc_li.appendChild(gc_img);
-    let current_message_info = document.createElement('p');
-    current_message_info.classList.add('group-name')
-
-    current_message_info.innerHTML = group_id.group_name;
-
-    let u_msg_content = document.createElement('small');
-    u_msg_content.classList.add('current-message');
-
-    u_msg_content.innerHTML = latest_msg;
-
-    gc_li.append(current_message_info, u_msg_content);
-
-    gc_li.classList.add('group-chat');
-
-    return gc_li;
-}
-
-/**
- * 
- * @param {Socket} socket 
- * @param {*} groups 
- * @returns 
- */
-export async function render_chat_bar(socket, groups) {
-    let groups_list = document.getElementById('chats-list');
-    groups_list.innerHTML = ""
-
-    let rt_list = [];
-    if (groups.length == 0) {
-        groups_list.innerHTML = 'no groups';
-    }
-    for (let i = 0; i < groups.length; i++) {
-        let list_item = await render_chat_list_item(groups[i]);
-        groups_list.appendChild(list_item);
-        console.log(groups[i]._id);
-        rt_list.push(list_item);
-    }
-    return rt_list;
-}
-
