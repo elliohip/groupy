@@ -1,5 +1,5 @@
 const PhotoMessage = require('../database/Models/PhotoMessage');
-var Message = require('../database/Models/message');
+var Message = require('../database/Models/Message');
 var async_handler = require('express-async-handler');
 
 const clean_html = require('../config/clean_html');

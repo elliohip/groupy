@@ -6,7 +6,7 @@ var group_map = require('../global_objects/group_map');
 const { v4 } = require('uuid');
 const Group = require('../database/Models/Group');
 const TempChat = require('../database/Models/TempChat');
-const Message = require('../database/Models/message');
+const Message = require('../database/Models/Message');
 
 const clean_html = require('../config/clean_html');
 
