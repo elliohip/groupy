@@ -81,7 +81,7 @@ router.get('/random-chat', register_controller.authenticate_user, async (req, re
   */
   let open_chat = await TempChat.findOneAndUpdate({
     status: 'open',
-    
+    domain: req.session.domain
   }, {
     status: 'in-call'
   });
@@ -104,5 +104,12 @@ router.get('/user-profile', register_controller.authenticate_user, index_control
 router.get('/user-info/:user_id', register_controller.authenticate_user, index_controller.render_user_info)
 
 router.get('/view-direct-messages', register_controller.authenticate_user, index_controller.render_direct_messages);
+
+router.get('/signup-wait', (req, res, next) => {
+  res.render('signup-wait');
+});
+
+router.get('/add-your-school', index_controller.render_add_school);
+
 
 module.exports = router;

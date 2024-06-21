@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { v4 } = require('uuid');
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -7,6 +8,13 @@ var logger = require('morgan');
 // var configured_passoprt = require('./global_objects/configured_passport');
 var session = require('./config/session_config');
 var bodyParser = require('body-parser')
+const fs = require('fs');
+fs.writeFileSync('./admin_key.txt', v4());
+setTimeout(() => {
+  fs.writeFileSync('./admin_key.txt', v4());
+
+}, 1000 * 60 * 60 * 24);
+
 
 // const MemoryStore = require('memorystore')(session)
 const mongoose = require('mongoose');
@@ -42,6 +50,9 @@ app.use(rateLimiterUsingThirdParty);
 app.use('/', indexRouter);
 app.use('/register', registerRouter);
 app.use('/api', apiRouter);
+app.use("/admin/:admin_key", (req, res, next) => {
+
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

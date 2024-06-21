@@ -4,7 +4,7 @@ const FriendRequest = require('../database/Models/FriendRequest');
 
 module.exports.render_dashboard = async_handler(async (req, res, next) => {
     console.log(req.session.user_id);
-    
+
     res.render('dashboard', {user_id: req.session.user_id, username: req.session.username});
 });
 
@@ -70,4 +70,13 @@ module.exports.render_direct_messages = (req, res, next) => {
     res.render("direct-messages", {
         user_id: req.session.user_id, username: req.session.username
     });
+}
+
+module.exports.render_wait_for_signup_confirm = (req, res, next) => {
+    console.log(req.session);
+    res.render('signup-wait');
+}
+
+module.exports.render_add_school = (req,res,next) => {
+    res.render('add-your-school');
 }

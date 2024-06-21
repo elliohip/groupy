@@ -1,9 +1,18 @@
 const User = require('../database/Models/User');
 
 const bcrypt = require('bcrypt');
+const send_mail = require('../config/send_mail');
 
 const async_handler = require('express-async-handler');
 const clean_html = require('../config/clean_html');
+const { v4 } = require('uuid');
+
+const fs = require('fs').promises
+// const clean_html = require('../config/clean_html');
+/**
+ * @type {String[]}
+ */
+var domains = require('../uploads/domains.json');
 
 module.exports.sign_up = async_handler(async (req, res, next) => {
 
@@ -19,16 +28,24 @@ module.exports.sign_up = async_handler(async (req, res, next) => {
 
     let salt = await bcrypt.genSalt(10);
     let encrypted_pass = await bcrypt.hash(req.body.password, salt);
-    let user = await User.create({
+    let user = {
         username: clean_html(req.body.username),
         hashed_password: encrypted_pass,
         email: clean_html(req.body.email)
+    };
+    let t_key = v4();
+    req.session.temp_key = t_key;
+    await send_mail({
+        to: user.email,
+        from: process.env.EMAIL_ADDR, 
+        subject: "access key for groupy",
+        text: t_key
     });
-    req.session.user_id = user.id;
-    req.session.email = user.email;
-    req.session.username = user.username;
+    req.session.temp_email = user.email;
+    req.session.temp_username = user.username;
+    req.session.temp_pass = user.hashed_password;
 
-    res.redirect('/dashboard');
+    res.redirect('/signup-wait');
 
 });
 
@@ -44,11 +61,18 @@ module.exports.log_in = async_handler(async (req, res, next) => {
     if (!is_user) {
         return res.json({error: {message: 'not password'}});
     }
-
+    let u_domain = log_user.email.split('@')[1];
     req.session.user_id = log_user.user_id;
     req.session.username = log_user.username;
     req.session.email = log_user.email;
-    req.session.domain = log_user.email.split('@')[1];
+    // req.session.domain = log_user.email.split('@')[1];
+    if (domains.includes(u_domain)) {
+        req.session.domain = u_domain;
+    }
+    else {
+        req.session.domain = "none"
+    }
+
     req.session.save((err) => {
         if (err) {
             console.log(err);
@@ -98,3 +122,7 @@ module.exports.authenticate_temp = async_handler(async (req, res, next) => {
         return res.redirect('/temp-login');
     }
 })
+
+module.exports.authenticate_admin = async (req, res, next) => {
+    
+}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <%- include('partials/heads/common-head.ejs') %>
+  <body class="sign-up">
+    <a class="button" href="/">
+        back to index
+    </a>
+    <h1>
+        how do I add my school???
+    </h1>
+    <p>
+        submit a request: 
+    </p>
+    <form action="/register/request-new-school" method="post">
+        <label> administrator email: 
+            <input name="email">
+        </label>
+        <label> school domain: 
+            <input name="domain">
+        </label>
+        <input type="submit">
+    </form>
+  </body>
+</html>
