@@ -5,7 +5,7 @@ const render_funcs = await import("./renderers/group_chat_renderer");
 
 import { GLOBALS } from "../globals";
 
-
+import { render_modal, render_modal_friend_requests } from "./renderers/modal_renderer";
 var groups = [];
 
 /**
@@ -50,12 +50,24 @@ export default async function (socket) {
      */
     let rendered_groups = [];
     let current_group_id = groups[0]._id;
+
+    let modal = render_modal();
+    document.body.appendChild(modal);
+
+
+    let friend_req_btn = document.getElementById("view-recent-friend-requests");
+
+    friend_req_btn.addEventListener('click', async (ev) => {
+        render_modal_friend_requests(modal, {x: ev.clientX, y: ev.clientY});
+    })
     if (!groups.length) {
         render_funcs.render_chat_bar(socket, groups);
         render_funcs.render_group_chat(socket, groups);
     } else {
+        
         rendered_groups = await render_funcs.render_chat_bar(socket, groups);
-        await render_funcs.render_group_chat(socket, groups[0]._id);
+        await render_funcs.render_group_chat(socket, groups[0]._id, modal);
+        GLOBALS.http_group_id = groups[0]._id;
         current_group_id = 'group-' + groups[0]._id;
         GLOBALS.http_group_id = groups[0]._id;
         document.getElementById(current_group_id).classList.add('current-group-selected');

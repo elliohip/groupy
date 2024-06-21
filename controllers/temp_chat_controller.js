@@ -2,6 +2,8 @@ const TempChat = require('../database/Models/TempChat');
 
 const async_handler = require('express-async-handler');
 
+const clean_html = require('../config/clean_html');
+
 module.exports.get_temp_chat = async_handler(async (req, res, next) => {
     let temp_chat = await TempChat.findById(req.params.temp_chat_id);
 
@@ -10,9 +12,7 @@ module.exports.get_temp_chat = async_handler(async (req, res, next) => {
 
 
 module.exports.close_temp_chat = async_handler(async (req, res, next) => {
-    await TempChat.findByIdAndUpdate(req.params.temp_chat_id, {
-        status: 'closed'
-    });
+    await TempChat.findByIdAndDelete(req.params.temp_chat_id);
 });
 
 module.exports.create_temp_chat = async_handler(async (req, res, next) => {

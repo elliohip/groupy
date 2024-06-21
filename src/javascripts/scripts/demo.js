@@ -12,6 +12,8 @@ export default async function() {
     let typing_box = document.getElementById('typing-info');
 
     let alert_box = document.getElementById('message-alert-box');
+
+    let http_room_id = SOCK_ROOM_ID.split("-")[1];
     /**
      * 
      * @type {HTMLFormElement}
@@ -46,8 +48,11 @@ export default async function() {
         }
         return;
     }
-    window.addEventListener('beforeunload', (event) => {
+    window.addEventListener('beforeunload', async (event) => {
         event.preventDefault();
+        await fetch(`${window.location.origin}/api/tempchats/${http_room_id}/delete`, {
+            method: 'DELETE'
+        });
         socket.emit('user-left', SOCK_ROOM_ID);
         event.returnValue = true;
         return true;
@@ -60,7 +65,7 @@ export default async function() {
         alert_box.innerHTML = "<h1> User Left </h1>"
     });
 
-    let send_listener = (ev) => {
+    let send_listener = async (ev) => {
         ev.preventDefault();
         socket.emit('send-message', SOCK_ROOM_ID, {
             content: message_input.value

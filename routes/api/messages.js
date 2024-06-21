@@ -13,7 +13,7 @@ const fs = require('fs').promises
 */
 router.get('/:group_id', register_controller.authenticate_user, messages_controller.get_messages);
 
-router.get('/:group_id/latest-msg', register_controller.authenticate_user, messages_controller.get_messages);
+// router.get('/:group_id/latest-msg', register_controller.authenticate_user, messages_controller.get_messages);
 
 
 var multer = require('multer');
@@ -45,16 +45,18 @@ const upload_message = multer({
 });
 
 
-router.get('/:group_id/text-messages/:message_id', );
+router.get('/:group_id/latest-msg', register_controller.authenticate_user, messages_controller.get_latest_message);
+
+// router.get('/:group_id/text-messages/:message_id', );
 
 
 router.post('/:group_id/text-messages', register_controller.authenticate_user, messages_controller.create_message);
 
 
-router.put('/:group_id/text-messages/:message_id', );
+// router.put('/:group_id/text-messages/:message_id', );
 
 
-router.delete('/:group_id/text-messages/:message_id', );
+// router.delete('/:group_id/text-messages/:message_id', );
 
 // router.get('/:group_idphoto-messages', );
 

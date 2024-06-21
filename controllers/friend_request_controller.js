@@ -67,7 +67,7 @@ module.exports.accept_friend_request = async_handler(async (req, res, next)=> {
 
     let to_u = await User.findById(friend_request.to_id);
 
-    let from_u = await User.findByIdAndUpdate(friend_request.from_id);
+    let from_u = await User.findById(friend_request.from_id);
 
     if (to_u.friends.includes(friend_request.from_id) && from_u.friends.includes(friend_request.from_id)) { // if both are friends, send the message, and return
         

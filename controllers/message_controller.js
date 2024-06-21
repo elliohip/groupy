@@ -2,6 +2,8 @@ const PhotoMessage = require('../database/Models/PhotoMessage');
 var Message = require('../database/Models/message');
 var async_handler = require('express-async-handler');
 
+const clean_html = require('../config/clean_html');
+
 module.exports.get_messages = async_handler(async (req, res, next) => {
     console.log(req.query);
 
@@ -81,7 +83,7 @@ module.exports.create_message = async_handler(async (req, res, next) => {
         let message = await Message.create({
             group_id: req.params.group_id,
             user_id: req.session.user_id,
-            text: req.query.text,
+            text: clean_html(req.query.text),
             username: req.query.username
         });
         console.log(message)
@@ -114,4 +116,17 @@ module.exports.get_photo_messages = async_handler(async (req, res, next) => {
 
 module.exports.get_photo_message = async_handler(async (req, res, next) => {
     
+});
+
+module.exports.get_latest_message = async_handler(async (req, res, next) => {
+    try {
+    let latest = await (await Message.findOne({
+        group_id: req.params.group_id
+    }, {}).sort({
+        "created_at": -1
+    }).exec());
+    res.json(latest);
+} catch(err) {
+    console.log(err);
+}
 });

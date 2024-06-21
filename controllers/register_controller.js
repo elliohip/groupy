@@ -3,6 +3,7 @@ const User = require('../database/Models/User');
 const bcrypt = require('bcrypt');
 
 const async_handler = require('express-async-handler');
+const clean_html = require('../config/clean_html');
 
 module.exports.sign_up = async_handler(async (req, res, next) => {
 
@@ -19,9 +20,9 @@ module.exports.sign_up = async_handler(async (req, res, next) => {
     let salt = await bcrypt.genSalt(10);
     let encrypted_pass = await bcrypt.hash(req.body.password, salt);
     let user = await User.create({
-        username: String(req.body.username),
+        username: clean_html(req.body.username),
         hashed_password: encrypted_pass,
-        email: String(req.body.email)
+        email: clean_html(req.body.email)
     });
     req.session.user_id = user.id;
     req.session.email = user.email;
@@ -48,15 +49,14 @@ module.exports.log_in = async_handler(async (req, res, next) => {
     req.session.username = log_user.username;
     req.session.email = log_user.email;
     req.session.domain = log_user.email.split('@')[1];
-
-    return res.redirect('/dashboard');
-    /*
     req.session.save((err) => {
         if (err) {
             console.log(err);
         }
+        res.redirect('/dashboard');
     });
-    */
+    
+    
     
 });
 
@@ -64,16 +64,14 @@ module.exports.log_in = async_handler(async (req, res, next) => {
 module.exports.authenticate_user_strict  = async_handler((req, res, next) => {
     if (req.session.user_id != String(req.params.user_id)) {
         console.log({message: 'not user'});
-        return next(new Error('not user'))
+        return res.redirect('/log-in');
     }
     next();
 });
 
 module.exports.authenticate_user = async_handler(async (req, res, next) => {
     if (!req.session.user_id) {
-        // res.json({message: 'error, no user'});
-        res.redirect('/log-in');
-        next(new Error('no user'))
+        return res.redirect('/log-in');
     }
     console.log(req.url);
     next();
@@ -81,7 +79,7 @@ module.exports.authenticate_user = async_handler(async (req, res, next) => {
 
 module.exports.authenticate_native = async_handler(async (req, res, next) => {
     if (!req.body.token) {
-        res.json({error: {
+        return res.json({error: {
             message: 'not authenticated'
         }});
     }

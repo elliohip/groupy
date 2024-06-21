@@ -20,6 +20,7 @@ var connection = mongoose.connect(process.env.MONGO_URL);
 var indexRouter = require('./routes/index');
 var registerRouter = require('./routes/register');
 var apiRouter = require('./routes/api');
+const rateLimiterUsingThirdParty = require('./config/rateLimiter');
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session);
+app.use(rateLimiterUsingThirdParty);
 // app.use(configured_passoprt.initialize());
 // app.use(configured_passoprt.session());
 // app.use(bodyParser.urlencoded())

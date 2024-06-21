@@ -25,7 +25,7 @@ router.get('/log-in', (req, res, next) => {
   res.render('log-in');
 });
 
-router.get('/dashboard', register_controller.authenticate_user, index_controller.render_dashboard);
+router.get('/dashboard', register_controller.authenticate_user, index_controller.render_user_dashboard);
 
 router.get('/dashboard/:user_id', register_controller.authenticate_user_strict, index_controller.render_user_dashboard);
 

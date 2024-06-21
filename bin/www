@@ -8,6 +8,7 @@ var app = require('../app');
 var debug = require('debug')('rando-chat:server');
 var http = require('http');
 var socket_funcs = require('../config/socket');
+var httpProxy = require('http-proxy');
 // var mongoose = require('mongoose');
 
 /**
@@ -17,11 +18,22 @@ var socket_funcs = require('../config/socket');
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
+var proxy = httpProxy.createProxyServer({
+  target: process.env.BASE_PATH
+});
+
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var server = http.createServer(app, (req, res) => {
+  proxy.web(req, res);
+});
+/*
+server.on('upgrade', (req, socket, head) => {
+  proxy.ws(req, socket, head);
+});
+*/
 socket_funcs.init_io(server);                   // init socket.io server 
 
 /**

@@ -1,6 +1,7 @@
 import { Socket } from "socket.io-client";
 
 import { GLOBALS } from "../../globals";
+import { render_modal,render_gc_edit_options } from "./modal_renderer";
 
 /**
  * 
@@ -48,13 +49,13 @@ const render_group_message = (u_or_o, user, inpt) => {
  * @param {String} curr_room_id string for the id of the current room "group-<GRP_ID>"
  * @param {String} prev_room_id
  */
-export async function render_group_chat(socket, http_grp_id) {
+export async function render_group_chat(socket, http_grp_id, modal) {
     
     let main_display = document.getElementById('main-display');
     main_display.innerHTML = "";
     main_display.innerHTML = `
-        <div id="groupchat-actions">
-
+        <div id="groupchat-actions" class="button gc-actions-button">
+            groupchat actions
         </div>
         <div id="message-alert-box">
 
@@ -71,6 +72,14 @@ export async function render_group_chat(socket, http_grp_id) {
         </form>
     
     `;
+
+    main_display.querySelector('#groupchat-actions').addEventListener("click", (ev) => {
+        
+        render_gc_edit_options(socket, GLOBALS.http_group_id, {
+            x: ev.clientX,
+            y: ev.clientY
+        }, modal);
+    });
 
     let curr_room_id = `group-${http_grp_id}`;
 
@@ -215,6 +224,7 @@ export async function render_group_chat(socket, http_grp_id) {
             method: "POST",
             body: txt_frm_bdy,
         })
+
         socket.emit('message-to-group', curr_room_id, {
             user_id: USER.user_id,
             username: USER.username,
@@ -262,10 +272,10 @@ export async function render_group_chat(socket, http_grp_id) {
  * @param {*} group_id String for group id
  */
 async function render_chat_list_item(group_id) {
-    let group = await ((await fetch(`${window.location.origin}/api/groups/by-id/${group_id._id}`))).json().text;
     
-    let latest_msg = await (await fetch(`${window.location.origin}/api/messages/${group_id._id}/latest-msg`)).json().text;
-    // console.log(group_id);
+    
+    let latest_msg = await (await fetch(`${window.location.origin}/api/messages/${group_id._id}/latest-msg`)).json();
+    console.log(latest_msg);
 
     let gc_li = document.createElement('li');
     gc_li.id = `group-${group_id._id}`;
@@ -284,7 +294,7 @@ async function render_chat_list_item(group_id) {
     let u_msg_content = document.createElement('small');
     u_msg_content.classList.add('current-message');
 
-    u_msg_content.innerHTML = latest_msg;
+    u_msg_content.innerHTML = latest_msg.text;
 
     gc_li.append(current_message_info, u_msg_content);
 

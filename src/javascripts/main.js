@@ -2,6 +2,7 @@ import dashboard from './scripts/dashboard';
 import demo from './scripts/demo';
 import direct_messages from './scripts/direct_messages';
 import random_chat from './scripts/random_chat'
+import { Modal } from './scripts/renderers/modal_renderer';
 import user_profile from './scripts/user_profile';
 import on_img_load from './services/img_loaders/on_img_load';
 
@@ -34,4 +35,5 @@ if (path_arr.includes('demo')) {
     });
     socket.connect();
     await direct_messages(socket);
+
 }

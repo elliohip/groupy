@@ -1,18 +1,26 @@
 const async_handler = require('express-async-handler');
 const User = require('../database/Models/User');
+const FriendRequest = require('../database/Models/FriendRequest');
 
 module.exports.render_dashboard = async_handler(async (req, res, next) => {
     console.log(req.session.user_id);
+    
     res.render('dashboard', {user_id: req.session.user_id, username: req.session.username});
 });
 
 module.exports.render_user_dashboard = async_handler(async (req, res, next) => {
     console.log(req.session.user_id);
-    res.render('dashboard', {user_id: req.session.user_id, username: req.session.username});
+    let friend_requests = await FriendRequest.find({
+        to_id: req.session.user_id,
+        rejected: false, 
+        accepted: false
+    });
+    res.render('dashboard', {user_id: req.session.user_id, username: req.session.username, friend_requests_amount: friend_requests.length});
 });
 
 module.exports.render_demo = async_handler(async (req, res, next) => {
     let rm_id = String(req.params.room_id).split('-')[1];
+
     res.render('demo', {
         room_id: rm_id,
         sock_rm_id: String(req.params.room_id)

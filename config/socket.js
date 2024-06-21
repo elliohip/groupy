@@ -8,6 +8,8 @@ const Group = require('../database/Models/Group');
 const TempChat = require('../database/Models/TempChat');
 const Message = require('../database/Models/message');
 
+const clean_html = require('../config/clean_html');
+
 
 let { ObjectId } = require('mongoose').Types;
 
@@ -81,7 +83,12 @@ module.exports.init_io = (http_server) => {
         });
 
         socket.on('send-message', (room_id, message) => {
-            socket.broadcast.to(room_id).emit('message-recieved', message);
+            let new_msg = {
+                user_id: message.user_id,
+                content : clean_html(message.content),
+                username: message.username
+            }
+            socket.broadcast.to(room_id).emit('message-recieved', new_msg);
         });
 
         socket.on('disconnect', () => {
@@ -99,7 +106,7 @@ module.exports.init_io = (http_server) => {
                 return;
             }
             try {
-                await TempChat.findByIdAndDelete(ObjectId.createFromHexString(room_id.split('-')[1]));
+                
             } catch (err) {
                 console.log(err);
             }
@@ -116,7 +123,7 @@ module.exports.init_io = (http_server) => {
                 let rom_type = room_id.split('-')[0];
                 let objid = room_id.split('-')[1];
                 if (rom_type.toLowerCase() != "group") {
-                    await TempChat.findByIdAndDelete(objid);
+                    
                 }
                 
             } catch(err) {
@@ -177,12 +184,6 @@ module.exports.init_io = (http_server) => {
         socket.on('add-user-to-group', async (group_id, username, user_id, socket_id) => {
             let g_id = group_id.split('-')[1];
             try {
-                let g = await Group.findById(g_id);
-                if (!(g.users.includes(user_id))) {
-                    g.users.push(user_id);
-                    await g.save();
-                }
-                
                 socket.to(group_id).emit('user-added', group_id, username, socket_id);
             } catch (err) {
                 console.log(err);
@@ -199,7 +200,7 @@ module.exports.init_io = (http_server) => {
             let message_info = {
                 user_id: message.user_id,
                 group_id: grp_id,
-                text: message.text,
+                text: clean_html(message.text),
                 username: message.username
             }
             console.log(`total groups:`);

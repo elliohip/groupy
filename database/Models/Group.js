@@ -10,6 +10,10 @@ var schema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     }],
+    admins: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }]
 });
 
 const Group = mongoose.model('Group', schema);

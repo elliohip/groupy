@@ -68,10 +68,11 @@ router.post('/group-photo', upload_group.single('photo_up'), group_controller.cr
 
 router.post('/new-group', register_controller.authenticate_user, group_controller.create_group_with_query);
 
+/*
 router.put('/update/:group_id', function(req, res, next) {
   
 });
-
+*/
 router.put('/add-user/:group_id', register_controller.authenticate_user, group_controller.add_user);
 
 router.delete('/delete/:group_id', function(req, res, next) {

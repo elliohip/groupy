@@ -12,7 +12,7 @@ module.exports.get_group = async_handler(async (req, res, next) => {
     let group = await Group.findById(String(req.params.group_id));
 
     if (!(group.users.includes(req.session.user_id))) {
-        res.json({message: 'not in group'})
+        return res.json({message: 'not in group'})
     }
     
     res.json(group);
@@ -109,13 +109,19 @@ module.exports.get_group_photo = async_handler(async (req, res, next) => {
 });
 
 module.exports.add_user = async_handler(async(req, res, next) => {
+    let user = await User.findOne({username: req.query.user_id});
+    if (!user) {
+        return res.json({
+            message: "no user"
+        });
+    }
     let group = await Group.findById(req.params.group_id);
     if (!group) {
         return res.json({
             message: "no group"
         });
     }
-    group.users.push(req.body.user_id);
+    group.users.push(user.id);
     await group.save();
 });
 

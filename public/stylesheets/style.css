@@ -336,6 +336,10 @@ body.random-chat main{
     DISPLAY DASHBOARD
 */
 
+.gc-actions-button {
+	max-width: 200px;
+}
+
 img.direct-message-svg {
 	width: 80px;
 	height: 80px;
