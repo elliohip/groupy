@@ -79,6 +79,7 @@ web_modules/
 .env.test.local
 .env.production.local
 .env.local
+.env.me
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -129,3 +130,8 @@ public/dist/main_dev.bundle.js
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
