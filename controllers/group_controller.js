@@ -128,7 +128,9 @@ module.exports.add_user = async_handler(async(req, res, next) => {
 module.exports.get_group_photo_default = async_handler(async (req, res, next) => {
     try {
         return res.sendFile(path.resolve(`./uploads/default/group-svgrepo-com.svg`), (err) => {
-            console.log(err);
+            if (err) {
+                console.log(err);
+            }
         });
     } catch (err) {
         console.log(err);
