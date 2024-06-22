@@ -4,11 +4,11 @@ const mongoose = require('mongoose');
 var connection = null;
 
 // Connection URL
-const url = process.env.MONGO_URL;
+// const url = process.env.MONGO_URL;
 
 async function connect() {
   try {
-    mongoose.connect(url);
+    mongoose.connect(process.env.MONGO_URL);
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
   }
