@@ -158,7 +158,7 @@ a {
 style index
 */
 
-header.index {
+nav.buttons-box.index {
 	display: flex;
 	flex-direction: row;
 }
