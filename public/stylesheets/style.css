@@ -176,8 +176,9 @@ main.index h1{
 
 #index-info {
 	display: flex;
-	justify-content: center;
+	align-content: center;
 	flex-direction: column;
+	gap: 15px;
 }
 #index-info p {
 	max-width: 800px;
