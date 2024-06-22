@@ -157,6 +157,12 @@ a {
 /*
 style index
 */
+
+.index-introduction {
+	display: flex;
+	flex-direction: column;
+}
+
 main.index {
 	display: grid;
 	grid-template-rows: fit-content 1fr 4fr;
