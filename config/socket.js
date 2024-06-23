@@ -101,10 +101,12 @@ module.exports.init_io = (http_server) => {
 
         socket.on('demo-left', async(room_id) => {
             socket.broadcast.to(room_id).emit('demo-left');
-            console.log(room_id);
+            console.log("user left room: " + room_id);
             if (room_id.split('-').length > 2) {
+                socket.disconnect();
                 return;
             }
+            socket.disconnect();
             try {
                 
             } catch (err) {
@@ -122,6 +124,7 @@ module.exports.init_io = (http_server) => {
                  */
                 let rom_type = room_id.split('-')[0];
                 let objid = room_id.split('-')[1];
+                socket.disconnect();
                 if (rom_type.toLowerCase() != "group") {
                     
                 }
