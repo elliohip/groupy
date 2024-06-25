@@ -1,0 +1,22 @@
+LICENSED TO: [Elliot Hipski]
+YEAR: 2024
+
+COPYRIGHT (C) [Elliot Hipski]
+
+ALL RIGHTS RESERVED
+
+This software is licensed for your personal or commercial use under the following terms:
+
+1. REDISTRIBUTION IS NOT PERMITTED. You may not redistribute this software in any form without written permission from the copyright holder(s).
+
+2. REVERSE ENGINEERING IS PROHIBITED. You may not reverse engineer, disassemble, decompile, or otherwise attempt to derive the source code for this software.
+
+3. MODIFICATION IS RESTRICTED. You may not modify this software without written permission from the copyright holder(s).
+
+4. NO WARRANTY. This software is provided "as is" without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. In no event shall the copyright holder(s) be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use this software.
+
+5. GOVERNING LAW. This License Agreement shall be governed by and construed in accordance with the laws of [Your Jurisdiction].
+
+6. ENTIRE AGREEMENT. This License Agreement constitutes the entire agreement between the parties with respect to the subject matter hereof and supersedes all prior or contemporaneous communications, representations, or agreements, whether oral or written.
+
+7. SEVERABILITY. If any provision of this License Agreement is held to be invalid or unenforceable, such provision shall be struck and the remaining provisions shall remain in full force and effect.
