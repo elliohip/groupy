@@ -158,6 +158,10 @@ a {
 style index
 */
 
+.list-domain {
+	font-size: 1.2rem;
+	padding-left: 20px;
+}
 nav.buttons-box.index {
 	display: flex;
 	flex-direction: row;

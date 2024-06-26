@@ -41,7 +41,14 @@
           <li> 3. creating groups </li>
         </ol>
       </div>
-      
+      <h1>
+        current colleges that are enrolled
+      </h1>
+      <ul class="current-college-domains">
+        <% for(var i=0; i < domains.length; i++) { %>
+          <li class="list-domain"><%= domains[i] %></li>
+        <% } %>
+      </ul>
     </main>
     <footer>
 

@@ -35,17 +35,22 @@ module.exports.sign_up = async_handler(async (req, res, next) => {
     };
     let t_key = v4();
     req.session.temp_key = t_key;
-    await send_mail({
-        to: user.email,
-        from: process.env.EMAIL_ADDR, 
-        subject: "access key for groupy",
-        text: t_key
-    });
-    req.session.temp_email = user.email;
-    req.session.temp_username = user.username;
-    req.session.temp_pass = user.hashed_password;
+    try {
+        await send_mail({
+            to: user.email,
+            from: process.env.EMAIL_ADDR, 
+            subject: "access key for groupy",
+            text: t_key
+        });
+        req.session.temp_email = user.email;
+        req.session.temp_username = user.username;
+        req.session.temp_pass = user.hashed_password;
 
-    res.redirect('/signup-wait');
+        return res.redirect('/signup-wait');
+    } catch (err) {
+        return res.json({message: "error with email, the email must be a valid email, dont use your college email until it is added to the list of registered emails from the homepage"});
+    }
+    
 
 });
 

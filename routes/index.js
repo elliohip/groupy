@@ -6,14 +6,16 @@ var register_controller = require('../controllers/register_controller');
 // var current_rooms = require('../global_objects/current_rooms');
 // var demo_rooms = require('../global_objects/demo_rooms');
 
+var curr_domains = require('../uploads/domains.json');
+
 var {v4} = require('uuid');
 const TempChat = require('../database/Models/TempChat');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   console.log(req.session.user_id);
-  
-  res.render('index', { title: 'Express' });
+
+  res.render('index', { domains: curr_domains });
   
 });
 
