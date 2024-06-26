@@ -19,6 +19,10 @@ router.get('/', function(req, res, next) {
   
 });
 
+router.get('/terms-of-service', (req, res, next) => {
+  res.render('terms-of-service')
+})
+
 router.get('/sign-up', (req, res, next) => {
   res.render('sign-up')
 });
