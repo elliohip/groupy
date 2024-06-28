@@ -61,9 +61,10 @@ router.get('/demo', async (req, res, next) => {
       status: 'open',
       domain: 'demo'
     });
+    req.session.curr_call_status = "o";
     return res.redirect(`/demo/TempChat-${t_c._id}`);
   }
-
+  req.session.curr_call_status = "ic";
   return res.redirect(`/demo/TempChat-${open_chat._id}`);
 
 
@@ -97,9 +98,10 @@ router.get('/random-chat', register_controller.authenticate_user, async (req, re
       status: 'open',
       domain: req.session.domain
     });
+    req.session.curr_call_status = "o";
     return res.redirect(`/random-chat/TempChat-${t_c._id}`);
   }
-
+  req.session.curr_call_status = "ic";
   return res.redirect(`/random-chat/TempChat-${open_chat._id}`);
 });
 

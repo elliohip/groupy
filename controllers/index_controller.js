@@ -23,7 +23,8 @@ module.exports.render_demo = async_handler(async (req, res, next) => {
 
     res.render('demo', {
         room_id: rm_id,
-        sock_rm_id: String(req.params.room_id)
+        sock_rm_id: String(req.params.room_id),
+        is_open: (req.session.curr_call_status === "o")
     });
 });
 
@@ -41,7 +42,8 @@ module.exports.render_random_chat = async_handler(async (req, res, next) => {
     res.render('random-chat', {
         room_id: rm_id,
         user: data_obj,
-        sock_rm_id: String(req.params.room_id)
+        sock_rm_id: String(req.params.room_id),
+        is_open: (req.session.curr_call_status === "o")
     });
 });
 
