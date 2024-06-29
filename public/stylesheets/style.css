@@ -160,11 +160,11 @@ style index
 ul.current-college-domains {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
+	max-height: 750px;
 }
 .list-domain {
 	font-size: 1.2rem;
 	padding-left: 20px;
-	max-height: 750px;
 }
 nav.buttons-box.index {
 	display: flex;
