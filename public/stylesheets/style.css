@@ -157,7 +157,10 @@ a {
 /*
 style index
 */
-
+ul.current-college-domains {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+}
 .list-domain {
 	font-size: 1.2rem;
 	padding-left: 20px;
