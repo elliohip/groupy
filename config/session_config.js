@@ -9,7 +9,6 @@ store: new MongoStore({
     })
 */
 
-console.log(process.env.MONGO_URL);
 
 module.exports = ses({
     secret: process.env.SESSION_SECRET,
