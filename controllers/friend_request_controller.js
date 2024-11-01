@@ -2,12 +2,15 @@ const User = require('../database/Models/User');
 const FriendRequest = require('../database/Models/FriendRequest');
 
 const async_handler = require('express-async-handler');
+
 const DirectMessageHistory = require('../database/Models/DirectMessageHistory');
 
 module.exports.create_friend_request_q = async_handler(async (req, res, next) => {
     console.log(req.body);
 
-    let check_is_friend = (await User.findById(req.session.user_id)).friends.includes(req.query.to_id);
+
+
+    let check_is_friend = (await User.findById(req.session.user_id)).friends.includes(req.body.to_id);
 
     if (check_is_friend) {
         return res.json({message: 'already friends'});
@@ -15,7 +18,7 @@ module.exports.create_friend_request_q = async_handler(async (req, res, next) =>
 
     let check_exists = await FriendRequest.findOne({
         from_id: req.session.user_id,
-        to_id: req.query.to_id
+        to_id: req.body.to_id
     });
 
     let check_other_req = await FriendRequest.findOne({

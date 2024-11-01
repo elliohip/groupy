@@ -16,16 +16,7 @@ setTimeout(() => {
 }, 1000 * 60 * 60 * 24);
 
 
-// const MemoryStore = require('memorystore')(session)
-const mongoose = require('mongoose');
 
-// const MongoStore = require('connect-mongo');
-
-// console.log(process.env.MONGO_URL);
-
-var connection = mongoose.connect(process.env.MONGO_URL).catch((err) => {
-  console.log(err);
-});
 
 var indexRouter = require('./routes/index');
 var registerRouter = require('./routes/register');
@@ -72,9 +63,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-process.on('SIGINT', async () => {
-  await mongoose.connection.close();
-  process.exit(1);
-});
 
 module.exports = app;

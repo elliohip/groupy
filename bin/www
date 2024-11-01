@@ -4,12 +4,44 @@
  * Module dependencies.
  */
 
+
+
 var app = require('../app');
 var debug = require('debug')('rando-chat:server');
 var http = require('http');
 var socket_funcs = require('../config/socket');
 var httpProxy = require('http-proxy');
 // var mongoose = require('mongoose');
+
+var test_server = null;
+// const MemoryStore = require('memorystore')(session)
+const mongoose = require('mongoose');
+
+// const MongoStore = require('connect-mongo');
+
+// console.log(process.env.MONGO_URL);
+var connection = null;
+var server = null;
+function create_server() { 
+  server = http.createServer(app, (req, res) => {
+    proxy.web(req, res);
+  });
+  
+  /*
+  server.on('upgrade', (req, socket, head) => {
+    proxy.ws(req, socket, head);
+  });
+  */
+  socket_funcs.init_io(server);                   // init socket.io server 
+  
+  /**
+   * Listen on provided port, on all network interfaces.
+   */
+  
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', onListening);
+}
 
 /**
  * Get port from environment and store in Express.
@@ -22,27 +54,28 @@ var proxy = httpProxy.createProxyServer({
   target: process.env.BASE_PATH
 });
 
+if (process.env.MODE != "dev") {
+  connection = mongoose.connect(process.env.MONGO_URL).then(() => {
+    create_server();
+  }).catch((err) => {
+  console.log(err);
+  });
+}
+else {
+  
+ 
+  connection = mongoose.connect(process.env.TEST_MONGODB_URL).then((mon) => {
+    create_server();
+  }).catch((err) => {
+      console.log(err);
+    });
+ 
+}
+
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app, (req, res) => {
-  proxy.web(req, res);
-});
-/*
-server.on('upgrade', (req, socket, head) => {
-  proxy.ws(req, socket, head);
-});
-*/
-socket_funcs.init_io(server);                   // init socket.io server 
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
 
 
 /**
@@ -104,3 +137,7 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+process.on('SIGINT', async () => {
+  await mongoose.connection.close();
+  process.exit(1);
+});

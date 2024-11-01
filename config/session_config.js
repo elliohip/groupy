@@ -9,17 +9,36 @@ store: new MongoStore({
     })
 */
 
+let config = null;
 
-module.exports = ses({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { 
-              secure: false,
-              maxAge: 1000 * 60 * 60 * 4,
-              httpOnly: true,
-            },
-    store: MongoStore.create({
-        mongoUrl: process.env.MONGO_URL
+if (process.env.MODE == "dev") {
+    config = ses({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: { 
+                  secure: false,
+                  maxAge: 1000 * 60 * 60 * 4,
+                  httpOnly: true,
+                },
+        store: MongoStore.create({
+            mongoUrl: process.env.TEST_MONGODB_URL
+        })
     })
-});
+} else {
+    config = ses({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: { 
+                secure: false,
+                maxAge: 1000 * 60 * 60 * 4,
+                httpOnly: true,
+                },
+        store: MongoStore.create({
+            mongoUrl: process.env.MONGO_URL
+        })
+    })
+}
+
+module.exports = config;
