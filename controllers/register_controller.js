@@ -17,7 +17,7 @@ var domains = require('../uploads/domains.json');
 module.exports.sign_up = async_handler(async (req, res, next) => {
 
     let check_user = await User.findOne({username: String(req.body.username)});
-    let check_email = await User.findOne({username: String(req.body.email)});
+    let check_email = await User.findOne({email: String(req.body.email)});
 
     if (check_email) {
         return res.json(new Error('email already exists'));

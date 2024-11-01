@@ -4,6 +4,8 @@
  * Module dependencies.
  */
 
+var path = require('path');
+
 
 
 var app = require('../app');
@@ -11,6 +13,8 @@ var debug = require('debug')('rando-chat:server');
 var http = require('http');
 var socket_funcs = require('../config/socket');
 var httpProxy = require('http-proxy');
+
+var fs = require('fs').promises
 // var mongoose = require('mongoose');
 
 var test_server = null;
@@ -27,7 +31,7 @@ function create_server() {
     proxy.web(req, res);
   });
   
-  /*
+  /* for http-proxy, will switch to nginx
   server.on('upgrade', (req, socket, head) => {
     proxy.ws(req, socket, head);
   });
@@ -54,23 +58,45 @@ var proxy = httpProxy.createProxyServer({
   target: process.env.BASE_PATH
 });
 
-if (process.env.MODE != "dev") {
-  connection = mongoose.connect(process.env.MONGO_URL).then(() => {
-    create_server();
-  }).catch((err) => {
-  console.log(err);
-  });
-}
-else {
-  
- 
-  connection = mongoose.connect(process.env.TEST_MONGODB_URL).then((mon) => {
-    create_server();
-  }).catch((err) => {
+// tries to see if uploads exists
+fs.mkdir(path.resolve("./uploads")).then(() => {
+    if (process.env.MODE != "dev") {
+      connection = mongoose.connect(process.env.MONGO_URL).then(() => {
+        create_server();
+      }).catch((err) => {
       console.log(err);
-    });
- 
-}
+      });
+    }
+    else {
+      
+    
+      connection = mongoose.connect(process.env.TEST_MONGODB_URL).then((mon) => {
+        create_server();
+      }).catch((err) => {
+          console.log(err);
+        });
+    
+    }
+  }).catch((err) => {
+    console.log(err);
+    if (process.env.MODE != "dev") {
+      connection = mongoose.connect(process.env.MONGO_URL).then(() => {
+        create_server();
+      }).catch((err) => {
+      console.log(err);
+      });
+    }
+    else {
+      
+    
+      connection = mongoose.connect(process.env.TEST_MONGODB_URL).then((mon) => {
+        create_server();
+      }).catch((err) => {
+          console.log(err);
+        });
+    
+    }
+  })
 
 /**
  * Create HTTP server.
