@@ -15,22 +15,22 @@ npm run start
 
 This is only a server instance running on local machine, the needed variables for the .env file are: 
 
-MONGO_URL=<url for mongodb>
+MONGO_URL= url for mongodb
 
-SESSION_SECRET=<secret for the session, can be any random string>
+SESSION_SECRET= secret for the session, can be any random string
 
-BASE_PATH=<http / https path>
+BASE_PATH= http / https path
 
-HOST=<host of the machine (can be localhost or an ip)>
+HOST= host of the machine (can be localhost or an ip)
 
-EMAIL_ADDR=<email addr for sending 2fa>
+EMAIL_ADDR= email addr for sending 2fa
 
-EMAIL_PASS=<password for email addr>
+EMAIL_PASS=  password for email addr 
 
-GOOGLE_APP_KEY=<key configured to your EMAIL_ADDR>
+GOOGLE_APP_KEY=  key configured to your EMAIL_ADDR 
 
-TEST_MONGODB_URL=<test url for testing the app>
+TEST_MONGODB_URL=  test url for testing the app 
 
-MODE=<dev or prod, depending on what you choose>    
+MODE= dev or prod, depending on what you choose    
 
 THE .env FILE IS MEANT FOR YOUR THE MACHINE RUNNING THE APP, NOT PUBLIC
