@@ -1,7 +1,6 @@
-const passport = require('passport')
-
-const init_passport = require('../config/init_passport');
+import passport from 'passport';
+import init_passport from '../config/init_passport.mjs';
 
 init_passport(passport);
 
-module.exports = passport;
+export default passport;

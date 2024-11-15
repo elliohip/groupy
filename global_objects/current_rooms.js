@@ -11,4 +11,6 @@
  *  room_status: String
  * }[]}
  */
-module.exports = [];
+let rooms = [];
+
+export default rooms
