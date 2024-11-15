@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
-import Message from './Message.js';
-import DirectMessageHistory from './DirectMessageHistory.js';
-import Group from './Group.js';
-import FriendRequest from './FriendRequest.js';
-import PhotoMessage from './PhotoMessage.js';
+import Message from './Message.mjs';
+import DirectMessageHistory from './DirectMessageHistory.mjs';
+import Group from './Group.mjs';
+import FriendRequest from './FriendRequest.mjs';
+import PhotoMessage from './PhotoMessage.mjs';
 
 const schema = new mongoose.Schema({
     username: {

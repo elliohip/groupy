@@ -2,18 +2,16 @@ import { Server } from 'socket.io';
 import {session_config as session_conf} from './session_config.mjs';
 import http from 'http';
 
-import group_map from '../global_objects/group_map';
 import { v4 as uuidv4 } from 'uuid';
-import Group from '../database/Models/Group';
-import TempChat from '../database/Models/TempChat';
-import Message from '../database/Models/Message';
+import Group from '../database/Models/Group.mjs';
 
 import clean_html from './clean_html.mjs';
-
+/* 
+import mongoose from 'mongoose';
 const { ObjectId } = mongoose.Types;
+*/
 
 
-let { ObjectId } = require('mongoose').Types;
 
 /**
  * @type {Server}
@@ -223,3 +221,5 @@ export const init_io = (http_server) => {
 
     
 }
+
+export default init_io;

@@ -1,5 +1,5 @@
-import PhotoMessage from '../database/Models/PhotoMessage';
-import Message from '../database/Models/Message';
+import PhotoMessage from '../database/Models/PhotoMessage.mjs';
+import Message from '../database/Models/Message.mjs';
 import async_handler from 'express-async-handler';
 
 import clean_html from '../config/clean_html.mjs';
@@ -130,3 +130,14 @@ export const get_latest_message = async_handler(async (req, res, next) => {
     console.log(err);
 }
 });
+
+export default {
+    get_latest_message,
+    get_message,
+    get_messages,
+    get_photo_message,
+    get_photo_messages,
+    create_message,
+    create_photo_message,
+    delete_message
+}

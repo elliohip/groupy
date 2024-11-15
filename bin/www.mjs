@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 import path from 'path';
-import app from '../app';
+import app from '../app.mjs';
 import debug from 'debug';
 import http from 'http';
-import socketFuncs from '../config/socket';
+import socket_funcs from '../config/socket.mjs';
 import httpProxy from 'http-proxy';
 import { promises as fs } from 'fs';
 import mongoose from 'mongoose';
@@ -21,7 +21,7 @@ function create_server() {
     proxy.ws(req, socket, head);
   });
   */
-  socket_funcs.init_io(server);                   // init socket.io server 
+  socket_funcs(server);                   // init socket.io server 
   
   /**
    * Listen on provided port, on all network interfaces.
@@ -36,7 +36,7 @@ async function connect_to_db_and_start_server() {
   if (process.env.MODE != "dev") {
     try {
 
-      connection = mongoose.connect(process.env.MONGO_URL)
+      connection = await mongoose.connect(process.env.MONGO_URL)
       create_server();
 
     } catch (err) {

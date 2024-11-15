@@ -2,13 +2,20 @@ import express from 'express';
 const router = express.Router();
 import index_controller from '../controllers/index_controller.mjs';
 import register_controller from '../controllers/register_controller.mjs';
+
+import {promises as fs} from "fs"
 // import currentRooms from '../global_objects/current_rooms';
 // import demoRooms from '../global_objects/demo_rooms';
 
-import curr_domains from '../uploads/domains.json';
 
 import { v4 as uuidv4 } from 'uuid';
-import TempChat from '../database/Models/TempChat';
+import TempChat from '../database/Models/TempChat.mjs';
+import path from 'path';
+
+/**
+ * @type {String[]}
+ */
+var curr_domains = JSON.parse(await fs.readFile(path.resolve('./uploads/domains.json')));
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

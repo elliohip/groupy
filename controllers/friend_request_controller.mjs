@@ -1,11 +1,11 @@
-import User from '../database/Models/User';
-import FriendRequest from '../database/Models/FriendRequest';
+import User from '../database/Models/User.mjs';
+import FriendRequest from '../database/Models/FriendRequest.mjs';
 
 import async_handler from 'express-async-handler';
 
-import DirectMessageHistory from '../database/Models/DirectMessageHistory';
+import DirectMessageHistory from '../database/Models/DirectMessageHistory.mjs';
 
-export const create_friend_request_q = async_handler(async (req, res, next) => {
+export const create_friend_request = async_handler(async (req, res, next) => {
     console.log(req.body);
 
 
@@ -22,7 +22,7 @@ export const create_friend_request_q = async_handler(async (req, res, next) => {
     });
 
     let check_other_req = await FriendRequest.findOne({
-        from_id: req.query.to_id,
+        from_id: req.body.to_id,
         to_id: req.session.user_id
     });
 
@@ -38,10 +38,10 @@ export const create_friend_request_q = async_handler(async (req, res, next) => {
         check_other_req.save();
         await User.findByIdAndUpdate(req.session.user_id, {
             $push: {
-                friends: req.query.to_id
+                friends: req.body.to_id
             }
         });
-        await User.findByIdAndUpdate(req.query.to_id, {
+        await User.findByIdAndUpdate(req.body.to_id, {
             $push: {
                 friends: req.session.user_id
             }
@@ -52,7 +52,7 @@ export const create_friend_request_q = async_handler(async (req, res, next) => {
 
     let friend_req = await FriendRequest.create({
         from_id: req.session.user_id,
-        to_id: req.query.to_id,
+        to_id: req.body.to_id,
         accepted: false,
         rejected: false
     });
@@ -152,3 +152,13 @@ export const get_friend_requests_from = async_handler(async (req, res, next) => 
     res.json(friend_requests);
 });
 
+export default {
+    create_friend_request,
+    accept_friend_request,
+    reject_friend_request,
+    get_friend_requests_to,
+    get_friend_requests_from,
+    get_friend_request,
+    delete_friend_request,
+    update_friend_request
+}

@@ -1,4 +1,4 @@
-import session from 'express-session';
+import ses from 'express-session';
 import MongoStore from 'connect-mongo';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -40,5 +40,7 @@ if (process.env.MODE == "dev") {
         })
     })
 }
+
+export const session_config = config;
 
 export default config;

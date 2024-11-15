@@ -10,4 +10,4 @@
  */
 var group_map = new Map();
 
-module.exports = group_map;
+export default group_map;

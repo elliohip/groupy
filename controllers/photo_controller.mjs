@@ -1,5 +1,5 @@
 import async_handler from 'express-async-handler';
-import User from '../database/Models/User';
+import User from '../database/Models/User.mjs';
 import path from 'path';
 
 import { promises as fs } from 'fs';
@@ -155,3 +155,14 @@ export const get_user_pic_ids = async_handler(async (req, res, next) => {
     res.json(user.photo_ids);
 });
 
+export default {
+    get_profile_pic,
+    get_pfp_by_id,
+    get_pic_by_id,
+    get_user_pic_by_id,
+    get_user_pic_ids,
+    delete_photo,
+    add_picture,
+    set_profile_pic,
+    
+}

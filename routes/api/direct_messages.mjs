@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import user_controller from '../../controllers/user_controller';
+import user_controller from '../../controllers/user_controller.mjs';
 import register_controller from '../../controllers/register_controller.mjs';
 import photos_router from './photos.mjs';
 

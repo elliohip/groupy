@@ -1,6 +1,6 @@
 import async_handler from 'express-async-handler';
-import User from '../database/Models/User';
-import FriendRequest from '../database/Models/FriendRequest';
+import User from '../database/Models/User.mjs';
+import FriendRequest from '../database/Models/FriendRequest.mjs';
 
 export const render_dashboard = async_handler(async (req, res, next) => {
     console.log(req.session.user_id);
@@ -81,4 +81,16 @@ export const render_wait_for_signup_confirm = (req, res, next) => {
 
 export const render_add_school = (req,res,next) => {
     res.render('add-your-school');
+}
+
+export default {
+    render_add_school,
+    render_dashboard,
+    render_demo,
+    render_direct_messages,
+    render_random_chat,
+    render_user_dashboard,
+    render_user_info,
+    render_user_profile,
+    render_wait_for_signup_confirm
 }

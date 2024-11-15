@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import DirectMessageHistory from '../database/Models/DirectMessageHistory';
+import DirectMessageHistory from '../database/Models/DirectMessageHistory.mjs';
 
 import async_handler from 'express-async-handler';
 
@@ -80,4 +80,15 @@ export const get_direct_message_histories = async (req, res, next) => {
 
 export const create_direct_message_history = async (req, res, next) => {
 
+}
+
+export default {
+    get_direct_message_histories,
+    get_direct_message_history,
+    get_direct_messages,
+    update_direct_message_history,
+    create_direct_message_history,
+    delete_direct_message,
+    delete_direct_message_history,
+    add_direct_message
 }

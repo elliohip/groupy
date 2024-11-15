@@ -1,6 +1,6 @@
 import LocalStrategy from 'passport-local';
 import bcrypt from 'bcrypt';
-import User from '../database/Models/User';
+import User from '../database/Models/User.mjs';
 import passport from 'passport';
 import path from 'path';
 import { promises as fs } from 'fs';

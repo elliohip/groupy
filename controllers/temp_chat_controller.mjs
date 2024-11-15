@@ -1,4 +1,4 @@
-import TempChat from '../database/Models/TempChat';
+import TempChat from '../database/Models/TempChat.mjs';
 
 import async_handler from 'express-async-handler';
 
@@ -27,3 +27,10 @@ export const create_temp_chat = async_handler(async (req, res, next) => {
 export const delete_temp_chat = async_handler(async (req, res, next) => {
     await TempChat.findByIdAndDelete(req.body.direct_message_id);
 });
+
+export default {
+    delete_temp_chat,
+    create_temp_chat,
+    close_temp_chat,
+    get_temp_chat
+}

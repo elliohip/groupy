@@ -5,6 +5,9 @@ import register_controller from '../../controllers/register_controller.mjs';
 import path from 'path';
 import { promises as fs } from 'fs';
 
+import multer from 'multer';
+import { v4 as uuidv4 } from 'uuid';
+
 /* 
     Get messages by group, passing in the max time you want to
     load messaged back to for pagination, will store the current 
@@ -15,9 +18,6 @@ router.get('/:group_id', register_controller.authenticate_user, messages_control
 
 // router.get('/:group_id/latest-msg', register_controller.authenticate_user, messages_controller.get_messages);
 
-
-var multer = require('multer');
-const { v4 } = require('uuid');
 
 var photo_message_store = multer.diskStorage({
     destination: async (req, file, cb) => {

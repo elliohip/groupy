@@ -6,7 +6,7 @@ import path from 'path';
 import register_controller from '../../controllers/register_controller.mjs';
 
 import group_controller from '../../controllers/group_controller.mjs';
-import Group from '../../database/Models/Group';
+import Group from '../../database/Models/Group.mjs';
 import multer from 'multer';
 
 var group_photo_storage = multer.diskStorage({

@@ -1,10 +1,11 @@
 import express from 'express';
 const router = express.Router();
 import register_controller from '../controllers/register_controller.mjs';
-import passport from '../global_objects/configured_passport';
+import passport from '../global_objects/configured_passport.mjs';
 import { v4 as uuidv4 } from 'uuid';
-import User from '../database/Models/User';
+import User from '../database/Models/User.mjs';
 import { promises as fs } from 'fs';
+import path from 'path';
 // import clean_html from '../config/clean_html';
 
 /**
@@ -16,15 +17,13 @@ import { promises as fs } from 'fs';
 
 
 /**
- * @type {[DomainRequest]}
+ * @type {DomainRequest[]}
  */
-import domain_requests from '../uploads/requested_domains.json';
-
+var domain_requests = JSON.parse(await fs.readFile('./uploads/requested_domains.json'));
 /**
  * @type {String[]}
  */
-import domains from '../uploads/domains.json';
-
+var domains = JSON.parse(await fs.readFile(path.resolve('./uploads/domains.json')));
 
 router.post('/sign-up', 
 register_controller.sign_up, (req, res, next) => {

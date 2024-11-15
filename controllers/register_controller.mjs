@@ -1,4 +1,4 @@
-import User from '../database/Models/User';
+import User from '../database/Models/User.mjs';
 
 import bcrypt from 'bcrypt';
 import send_mail from '../config/send_mail.mjs';
@@ -8,11 +8,12 @@ import clean_html from '../config/clean_html.mjs';
 import { v4 as uuidv4 } from 'uuid';
 
 import { promises as fs } from 'fs';
+import path from 'path';
 // import clean_html from '../config/clean_html';
 /**
  * @type {String[]}
  */
-import domains from '../uploads/domains.json';
+var domains = JSON.parse(await fs.readFile(path.resolve('./uploads/domains.json')));
 
 export const sign_up = async_handler(async (req, res, next) => {
 
@@ -130,4 +131,14 @@ export const authenticate_temp = async_handler(async (req, res, next) => {
 
 export const authenticate_admin = async (req, res, next) => {
     
+}
+
+export default {
+    sign_up,
+    log_in,
+    authenticate_admin,
+    authenticate_user,
+    authenticate_user_strict,
+    authenticate_temp,
+    authenticate_native,
 }

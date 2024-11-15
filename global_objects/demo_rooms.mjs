@@ -11,4 +11,4 @@
 *  room_status: String
 * }[]}
 */
-module.exports = []
+export default []

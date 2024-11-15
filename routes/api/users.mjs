@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import user_controller from '../../controllers/user_controller';
+import user_controller from '../../controllers/user_controller.mjs';
 import register_controller from '../../controllers/register_controller.mjs';
 import photos_router from './photos.mjs';
 import direct_message_router from './direct_messages.mjs';
@@ -31,7 +31,7 @@ router.put('/:user_id/remove-friend', register_controller.authenticate_user, use
 
 // this route requires user_id in the search params
 router.use('/photos', photos_router);
-router.use('/:user_id/direct-messages', register_controller.authenticate_user_strict_q, direct_message_router);
+router.use('/:user_id/direct-messages', register_controller.authenticate_user_strict, direct_message_router);
 
 
 export default router;
